@@ -1,0 +1,8 @@
+-Added in random velocity/direction to the ball when the game is reset
+
+-Added in a player wins text when one of the players gets to the score 3
+
+-Added in some variables that are displayed on screen for testing purposes
+
+-Changed the scaling for the inital level to allow the player to handle the bat easier (0 - 0.5 hand position scaling)
+
