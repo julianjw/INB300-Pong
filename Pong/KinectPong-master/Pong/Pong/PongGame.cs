@@ -92,12 +92,15 @@ namespace Pong
 		
 		Texture2D dotTexture = null, ballTexture = null;
 		
-		Rectangle ourPaddleRectRight = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
-        Rectangle ourPaddleRectLeft = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
+		Rectangle ourPaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
+        Rectangle ourPaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
 		Rectangle aiPaddleRect;
 		
-		Vector2 ballVelocity;
-		Rectangle ballRect;
+		Vector2 ballRedVelocity;
+        Vector2 ballBlueVelocity;
+
+		Rectangle ballRedRect;
+        Rectangle ballBlueRect;
 		
 		float predictedBallHeight = 0.0f;
 
@@ -107,8 +110,11 @@ namespace Pong
         SpriteFont gameFont;
 
         float handPos;
-        int ballVelocityX;
-        int ballVelocityY;
+        int ballRedVelocityX;
+        int ballRedVelocityY;
+
+        int ballBlueVelocityX;
+        int ballBlueVelocityY;
 
         string gameText = "";
 
@@ -133,32 +139,33 @@ namespace Pong
 		private void RestartGame()
 		{
             aiPaddleRect = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
-            ballRect = new Rectangle(500, 600, kBallWidth, kBallHeight);
+            ballRedRect = new Rectangle(500, 600, kBallWidth, kBallHeight);
+            ballBlueRect = new Rectangle(500, 300, kBallWidth, kBallHeight);
 
             if (player1Score >= 3)
             {
                 //set text to player 1 wins
                 gameText = "Player 1 Wins!";
-                ballVelocity = new Vector2(0.0f, 0.0f);
+                ballRedVelocity = new Vector2(0.0f, 0.0f);
             }
             else if (player2Score >= 3)
             {
                 //set text to player 2 wins
                 gameText = "Player 2 Wins!";
-                ballVelocity = new Vector2(0.0f, 0.0f);
+                ballRedVelocity = new Vector2(0.0f, 0.0f);
             }
             else
             {
-                ballVelocity = new Vector2((float)new Random(time.Millisecond).Next(-10, 10), (float)new Random(time.Millisecond).Next(-10, 10));
-                while (ballVelocity.X == 0 || (ballVelocity.X >= -6 && ballVelocity.X <= 0) || (ballVelocity.X <= 6 && ballVelocity.X >= 0)) {
-                    ballVelocity.X = new Random().Next(-10, 10);
+                ballRedVelocity = new Vector2((float)new Random(time.Millisecond).Next(-10, 10), (float)new Random(time.Millisecond).Next(-10, 10));
+                while (ballRedVelocity.X == 0 || (ballRedVelocity.X >= -6 && ballRedVelocity.X <= 0) || (ballRedVelocity.X <= 6 && ballRedVelocity.X >= 0)) {
+                    ballRedVelocity.X = new Random().Next(-10, 10);
                 }
-                while (ballVelocity.Y == 0 || (ballVelocity.Y >= -6 && ballVelocity.Y <= 0) || (ballVelocity.Y <= 6 && ballVelocity.Y >= 0))
+                while (ballRedVelocity.Y == 0 || (ballRedVelocity.Y >= -6 && ballRedVelocity.Y <= 0) || (ballRedVelocity.Y <= 6 && ballRedVelocity.Y >= 0))
                 {
-                    ballVelocity.Y = new Random().Next(-10, 10);
+                    ballRedVelocity.Y = new Random().Next(-10, 10);
                 }
-                ballVelocityX = (int)ballVelocity.X;
-                ballVelocityY = (int)ballVelocity.Y;
+                ballRedVelocityX = (int)ballRedVelocity.X;
+                ballRedVelocityY = (int)ballRedVelocity.Y;
             }
 
 		}
@@ -270,14 +277,14 @@ namespace Pong
 		
 		private void SimulateRestOfTurn()
 		{
-			Rectangle currentBallRect = ballRect;
-			Vector2 currentBallVelocity = ballVelocity;
+			Rectangle currentBallRect = ballRedRect;
+			Vector2 currentballRedVelocity = ballRedVelocity;
 			
 			bool done = false;
 			
 			while (!done)
 			{
-				BallCollision result = AdjustBallPositionWithScreenBounds(ref currentBallRect, ref currentBallVelocity);
+				BallCollision result = AdjustBallPositionWithScreenBounds(ref currentBallRect, ref currentballRedVelocity);
 				done = (result == BallCollision.RightMiss || result == BallCollision.RightPaddle);
 			}
 			
@@ -314,7 +321,7 @@ namespace Pong
 				velocity.X *= -1;
 				collision = BallCollision.RightPaddle;
 			}
-			else if (ourPaddleRectRight.Intersects(enclosingRect))
+			else if (ourPaddleRectLeft.Intersects(enclosingRect))
 			{
 				velocity.X *= -1;
 				collision = BallCollision.LeftPaddle;
@@ -349,14 +356,14 @@ namespace Pong
 
             
 			
-			BallCollision collision = AdjustBallPositionWithScreenBounds(ref ballRect, ref ballVelocity);
+			BallCollision collision = AdjustBallPositionWithScreenBounds(ref ballRedRect, ref ballRedVelocity);
 			
 			if (collision > 0)
 			{
 				passedCenter = false;
 				
 				float newY = (new Random().Next(80) + 1) / 10.0f;
-				ballVelocity.Y = ballVelocity.Y > 0 ? newY : -newY;
+				ballRedVelocity.Y = ballRedVelocity.Y > 0 ? newY : -newY;
 			}
 			
 			if (collision == BallCollision.RightMiss || collision == BallCollision.LeftMiss)
@@ -371,7 +378,7 @@ namespace Pong
 				RestartGame();
 			}
 			
-			if (passedCenter == false && ballVelocity.X > 0 && (ballRect.X + kBallWidth >= GraphicsDevice.Viewport.Bounds.Center.X))
+			if (passedCenter == false && ballRedVelocity.X > 0 && (ballRedRect.X + kBallWidth >= GraphicsDevice.Viewport.Bounds.Center.X))
 			{
 				SimulateRestOfTurn();
 				passedCenter = true;
@@ -407,12 +414,12 @@ namespace Pong
 			spriteBatch.Begin();
 			
             //Draw the player's paddles
-			spriteBatch.Draw(dotTexture, ourPaddleRectRight, Color.Red);
-            spriteBatch.Draw(dotTexture, ourPaddleRectLeft, Color.Blue);
+			spriteBatch.Draw(dotTexture, ourPaddleRectRight, Color.Blue);
+            spriteBatch.Draw(dotTexture, ourPaddleRectLeft, Color.Red);
             //Draw the AI's paddles
 			spriteBatch.Draw(dotTexture, aiPaddleRect, Color.IndianRed);
             //Draw the ball
-			spriteBatch.Draw(ballTexture, ballRect, Color.Red);
+			spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
 
             Vector2 position = new Vector2(500.0f, 10.0f);
             Vector2 position2 = new Vector2(500.0f, 30.0f);
@@ -422,8 +429,8 @@ namespace Pong
 
             spriteBatch.DrawString(gameFont, (player1Score + " | " + player2Score), position, Color.Black);
             spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos),position2,Color.Black);
-            spriteBatch.DrawString(gameFont, ("Ball Velocity X: " + ballVelocityX), position4, Color.Black);
-            spriteBatch.DrawString(gameFont, ("Ball Velocity Y: " + ballVelocityY), position5, Color.Black);
+            spriteBatch.DrawString(gameFont, ("Ball Velocity X: " + ballRedVelocityX), position4, Color.Black);
+            spriteBatch.DrawString(gameFont, ("Ball Velocity Y: " + ballRedVelocityY), position5, Color.Black);
             spriteBatch.DrawString(gameFont, gameText, position3, Color.SteelBlue);
 			
 			spriteBatch.End();
