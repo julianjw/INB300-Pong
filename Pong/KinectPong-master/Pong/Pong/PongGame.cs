@@ -27,7 +27,7 @@ namespace Pong
             Microsoft.Kinect.SkeletonPoint pos = new SkeletonPoint()
             {
                 X = Scale(width, skeletonMaxX, joint.Position.X),
-                Y = Scale(height, skeletonMaxY, -joint.Position.Y), //-joint.Position.Y
+                Y = Scale(height, skeletonMaxY, joint.Position.Y), //-joint.Position.Y
                 Z = joint.Position.Z
             };
 
@@ -56,14 +56,14 @@ namespace Pong
             //    return 0;
             //return value;
 
-            //Make the sure the position is positive so the hand position is being used properly
-            position = Math.Abs(position);
-
             //Make sure the hand position is within the boundaries of the 0.5 - 0.0 scaled set
             if (position > 0.5f)
                 return 0;
             if (position < 0)
                 return maxPixel;
+
+            //Make the sure the position is positive so the hand position is being used properly
+            //position = Math.Abs(position);
 
             //Get the percentage of the hand position within the 0.5 - 0.0 scaled set
             float percent = position / maxSkeleton; 
@@ -92,7 +92,8 @@ namespace Pong
 		
 		Texture2D dotTexture = null, ballTexture = null;
 		
-		Rectangle ourPaddleRect = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
+		Rectangle ourPaddleRectRight = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
+        Rectangle ourPaddleRectLeft = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
 		Rectangle aiPaddleRect;
 		
 		Vector2 ballVelocity;
@@ -218,27 +219,30 @@ namespace Pong
                 {
                     if (SkeletonTrackingState.Tracked == skel.TrackingState)
                     {
-                        Joint joint = skel.Joints[JointType.HandRight];
+                        Joint jointRight = skel.Joints[JointType.HandRight];
+                        Joint jointLeft = skel.Joints[JointType.HandLeft];
 
                         int handRightY = 0;
 
                         //need to add in left hand stuff
 
-                        //int handLeftY = 0;
+                        int handLeftY = 0;
 
                         //right hand = red paddle and ball
                         
-                        handRightY = (int)SkeletalCommonExtensions.ScaleTo(joint, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
+                        handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
 
                         //left hand = blue paddle and ball
 
-                        //handLeftY = (int)SkeletalCommonExtensions.ScaleTo(joint, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
+                        handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
 
                         //if multiplayer blah blah blah
 
-                        handPos = joint.Position.Y;
+                        handPos = jointRight.Position.Y;
 
-                        ourPaddleRect.Y = handRightY;
+                        ourPaddleRectRight.Y = handRightY;
+
+                        ourPaddleRectLeft.Y = handLeftY;
 
                         break;
                     }
@@ -275,9 +279,6 @@ namespace Pong
 			{
 				BallCollision result = AdjustBallPositionWithScreenBounds(ref currentBallRect, ref currentBallVelocity);
 				done = (result == BallCollision.RightMiss || result == BallCollision.RightPaddle);
-                //spriteBatch.DrawString(gameFont, "Player 1: " + player1Score + " | Player 2: " + player2Score);
-
-
 			}
 			
 			predictedBallHeight = currentBallRect.Y;
@@ -313,7 +314,7 @@ namespace Pong
 				velocity.X *= -1;
 				collision = BallCollision.RightPaddle;
 			}
-			else if (ourPaddleRect.Intersects(enclosingRect))
+			else if (ourPaddleRectRight.Intersects(enclosingRect))
 			{
 				velocity.X *= -1;
 				collision = BallCollision.LeftPaddle;
@@ -405,8 +406,12 @@ namespace Pong
 			
 			spriteBatch.Begin();
 			
-			spriteBatch.Draw(dotTexture, ourPaddleRect, Color.Red);
+            //Draw the player's paddles
+			spriteBatch.Draw(dotTexture, ourPaddleRectRight, Color.Red);
+            spriteBatch.Draw(dotTexture, ourPaddleRectLeft, Color.Blue);
+            //Draw the AI's paddles
 			spriteBatch.Draw(dotTexture, aiPaddleRect, Color.IndianRed);
+            //Draw the ball
 			spriteBatch.Draw(ballTexture, ballRect, Color.Red);
 
             Vector2 position = new Vector2(500.0f, 10.0f);
