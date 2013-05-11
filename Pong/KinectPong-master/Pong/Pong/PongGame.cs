@@ -22,7 +22,7 @@ namespace Pong
 {
     internal static class SkeletalCommonExtensions
     {
-        public static Joint ScaleTo(this Joint joint, int width, int height, float skeletonMaxX, float skeletonMaxY)
+        public static Joint ScaleTo(this Joint joint, int width, int height, float skeletonMaxX, float skeletonMaxY, int gameLevel)
         {
             Microsoft.Kinect.SkeletonPoint pos = new SkeletonPoint()
             {
@@ -38,7 +38,7 @@ namespace Pong
 
         public static Joint ScaleTo(this Joint joint, int width, int height)
         {
-            return ScaleTo(joint, width, height, 1.0f, 1.0f);
+            return ScaleTo(joint, width, height, 1.0f, 1.0f, 1);
         }
 
         private static float Scale(int maxPixel, float maxSkeleton, float position)
@@ -113,10 +113,7 @@ namespace Pong
 
         DateTime time = new DateTime();
 
-		
-		//KinectSensor runtime = new KinectSensor();
-
-        //private Skeleton[] skeletonData;
+        int gameLevel = 1;
 
         /// <summary>
         /// Active Kinect sensor
@@ -217,17 +214,31 @@ namespace Pong
 
             if (skeletons.Length != 0)
                 {
-                foreach (Skeleton skel in skeletons)
+                foreach (Skeleton skel in skeletons) 
                 {
                     if (SkeletonTrackingState.Tracked == skel.TrackingState)
                     {
                         Joint joint = skel.Joints[JointType.HandRight];
 
-                        int handY = (int)SkeletalCommonExtensions.ScaleTo(joint, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f).Position.Y;
+                        int handRightY = 0;
+
+                        //need to add in left hand stuff
+
+                        //int handLeftY = 0;
+
+                        //right hand = red paddle and ball
+                        
+                        handRightY = (int)SkeletalCommonExtensions.ScaleTo(joint, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
+
+                        //left hand = blue paddle and ball
+
+                        //handLeftY = (int)SkeletalCommonExtensions.ScaleTo(joint, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
+
+                        //if multiplayer blah blah blah
 
                         handPos = joint.Position.Y;
 
-                        ourPaddleRect.Y = handY;
+                        ourPaddleRect.Y = handRightY;
 
                         break;
                     }
