@@ -80,7 +80,7 @@ namespace Pong
 	public class PongGame : Microsoft.Xna.Framework.Game
 	{
 
-		const int kLRMargin = 20, kPaddleWidth = 26, kPaddleHeight = 120;
+        const int kLRMargin = 20, kPaddleWidth = 26, kPaddleHeight = 120, kSmallPaddleHeight = 60;
 		const int kBallWidth = 24, kBallHeight = 24;
 		const int kMaxAIPaddleVelocity = 7;
 		const int kGameWidth = 1360, kGameHeight = 800;
@@ -108,6 +108,7 @@ namespace Pong
         int player2Score = 0;
 
         SpriteFont gameFont;
+        SpriteFont titleFont;
 
         float handPos;
         int ballRedVelocityX;
@@ -120,7 +121,7 @@ namespace Pong
 
         DateTime time = new DateTime();
 
-        int gameLevel = 1;
+        int gameLevel = 0;
 
         /// <summary>
         /// Active Kinect sensor
@@ -235,21 +236,33 @@ namespace Pong
 
                         int handLeftY = 0;
 
-                        //right hand = red paddle and ball
-                        
-                        handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
+                        if (gameLevel == 0)
+                        {
+                            Joint jointHead = skel.Joints[JointType.Head];
 
-                        //left hand = blue paddle and ball
+                            if (jointRight.Position.Y >= jointHead.Position.Y)
+                            {
+                                gameLevel++;
+                            }
+                        }
+                        else
+                        {
+                            //right hand = red paddle and ball
 
-                        handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
+                            handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
 
-                        //if multiplayer blah blah blah
+                            //left hand = blue paddle and ball
 
-                        handPos = jointRight.Position.Y;
+                            handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
 
-                        ourPaddleRectRight.Y = handRightY;
+                            //if multiplayer blah blah blah
 
-                        ourPaddleRectLeft.Y = handLeftY;
+                            handPos = jointRight.Position.Y;
+
+                            ourPaddleRectRight.Y = handRightY;
+
+                            ourPaddleRectLeft.Y = handLeftY;
+                        }
 
                         break;
                     }
@@ -262,6 +275,7 @@ namespace Pong
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
             gameFont = Content.Load<SpriteFont>("Scoreboard");
+            titleFont = Content.Load<SpriteFont>("Title");
 
 			dotTexture = Content.Load<Texture2D>("Dot");
 			ballTexture = Content.Load<Texture2D>("Ball");
@@ -354,88 +368,108 @@ namespace Pong
                 RestartGame();
             }
 
-            
-			
-			BallCollision collision = AdjustBallPositionWithScreenBounds(ref ballRedRect, ref ballRedVelocity);
-			
-			if (collision > 0)
-			{
-				passedCenter = false;
-				
-				float newY = (new Random().Next(80) + 1) / 10.0f;
-				ballRedVelocity.Y = ballRedVelocity.Y > 0 ? newY : -newY;
-			}
-			
-			if (collision == BallCollision.RightMiss || collision == BallCollision.LeftMiss)
-			{
-                //Changes the score to reflect who won the point (who missed the ball)
-                if (BallCollision.RightMiss == collision) {
-                    player1Score += 1;
-                } else if (BallCollision.LeftMiss == collision) {
-                    player2Score += 1;
+
+            if (gameLevel == 0)
+            {
+            }
+            else
+            {
+                BallCollision collision = AdjustBallPositionWithScreenBounds(ref ballRedRect, ref ballRedVelocity);
+
+                if (collision > 0)
+                {
+                    passedCenter = false;
+
+                    float newY = (new Random().Next(80) + 1) / 10.0f;
+                    ballRedVelocity.Y = ballRedVelocity.Y > 0 ? newY : -newY;
                 }
 
-				RestartGame();
-			}
-			
-			if (passedCenter == false && ballRedVelocity.X > 0 && (ballRedRect.X + kBallWidth >= GraphicsDevice.Viewport.Bounds.Center.X))
-			{
-				SimulateRestOfTurn();
-				passedCenter = true;
-			}
-			
-			int ballCenter = (int)predictedBallHeight + (kBallHeight / 2);
-			int aiPaddleCenter = aiPaddleRect.Center.Y;
-			
-			if (predictedBallHeight > 0 && ballCenter != aiPaddleCenter)
-			{
-				if (ballCenter < aiPaddleCenter)
-				{
-					aiPaddleRect.Y -= kMaxAIPaddleVelocity;
-				}
-				else if (ballCenter > aiPaddleCenter)
-				{
-					aiPaddleRect.Y += kMaxAIPaddleVelocity;
-				}
-				
-				if (Math.Abs(ballCenter - aiPaddleCenter) < kMaxAIPaddleVelocity)
-				{
-					aiPaddleRect.Y = ballCenter - (kPaddleHeight / 2);
-				}
-			}
-			
+                if (collision == BallCollision.RightMiss || collision == BallCollision.LeftMiss)
+                {
+                    //Changes the score to reflect who won the point (who missed the ball)
+                    if (BallCollision.RightMiss == collision)
+                    {
+                        player1Score += 1;
+                    }
+                    else if (BallCollision.LeftMiss == collision)
+                    {
+                        player2Score += 1;
+                    }
+
+                    RestartGame();
+                }
+
+                if (passedCenter == false && ballRedVelocity.X > 0 && (ballRedRect.X + kBallWidth >= GraphicsDevice.Viewport.Bounds.Center.X))
+                {
+                    SimulateRestOfTurn();
+                    passedCenter = true;
+                }
+
+                int ballCenter = (int)predictedBallHeight + (kBallHeight / 2);
+                int aiPaddleCenter = aiPaddleRect.Center.Y;
+
+                if (predictedBallHeight > 0 && ballCenter != aiPaddleCenter)
+                {
+                    if (ballCenter < aiPaddleCenter)
+                    {
+                        aiPaddleRect.Y -= kMaxAIPaddleVelocity;
+                    }
+                    else if (ballCenter > aiPaddleCenter)
+                    {
+                        aiPaddleRect.Y += kMaxAIPaddleVelocity;
+                    }
+
+                    if (Math.Abs(ballCenter - aiPaddleCenter) < kMaxAIPaddleVelocity)
+                    {
+                        aiPaddleRect.Y = ballCenter - (kPaddleHeight / 2);
+                    }
+                }
+            }
 			base.Update(gameTime);
 		}
 		
 		protected override void Draw(GameTime gameTime)
 		{
-			GraphicsDevice.Clear(Color.White);
-			
-			spriteBatch.Begin();
-			
-            //Draw the player's paddles
-			spriteBatch.Draw(dotTexture, ourPaddleRectRight, Color.Blue);
-            spriteBatch.Draw(dotTexture, ourPaddleRectLeft, Color.Red);
-            //Draw the AI's paddles
-			spriteBatch.Draw(dotTexture, aiPaddleRect, Color.IndianRed);
-            //Draw the ball
-			spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
+            GraphicsDevice.Clear(Color.White);
 
-            Vector2 position = new Vector2(500.0f, 10.0f);
-            Vector2 position2 = new Vector2(500.0f, 30.0f);
-            Vector2 position3 = new Vector2(500.0f, 300.0f);
-            Vector2 position4 = new Vector2(500.0f, 50.0f);
-            Vector2 position5 = new Vector2(500.0f, 70.0f);
+            spriteBatch.Begin();
 
-            spriteBatch.DrawString(gameFont, (player1Score + " | " + player2Score), position, Color.Black);
-            spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos),position2,Color.Black);
-            spriteBatch.DrawString(gameFont, ("Ball Velocity X: " + ballRedVelocityX), position4, Color.Black);
-            spriteBatch.DrawString(gameFont, ("Ball Velocity Y: " + ballRedVelocityY), position5, Color.Black);
-            spriteBatch.DrawString(gameFont, gameText, position3, Color.SteelBlue);
-			
-			spriteBatch.End();
-			
+            if (gameLevel == 0)
+            {
+                Vector2 titlePostion = new Vector2((kGameWidth/2) - 100, (kGameHeight/2) - 50);
+                Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
+                spriteBatch.DrawString(titleFont, ("PONG 3000"), titlePostion, Color.Black);
+                spriteBatch.DrawString(gameFont, ("Let's Pong It Up! Game Level: " + gameLevel), taglinePosition, Color.Black);
+            }
+            else
+            {
+
+                //Draw the player's paddles
+                spriteBatch.Draw(dotTexture, ourPaddleRectRight, Color.Blue);
+                spriteBatch.Draw(dotTexture, ourPaddleRectLeft, Color.Red);
+                //Draw the AI's paddles
+                spriteBatch.Draw(dotTexture, aiPaddleRect, Color.IndianRed);
+                //Draw the ball
+                spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
+
+                Vector2 position = new Vector2(500.0f, 10.0f);
+                Vector2 position2 = new Vector2(500.0f, 30.0f);
+                Vector2 position3 = new Vector2(500.0f, 300.0f);
+                Vector2 position4 = new Vector2(500.0f, 50.0f);
+                Vector2 position5 = new Vector2(500.0f, 70.0f);
+
+                spriteBatch.DrawString(gameFont, (player1Score + " | " + player2Score), position, Color.Black);
+                spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos), position2, Color.Black);
+                spriteBatch.DrawString(gameFont, ("Ball Velocity X: " + ballRedVelocityX), position4, Color.Black);
+                spriteBatch.DrawString(gameFont, ("Ball Velocity Y: " + ballRedVelocityY), position5, Color.Black);
+                spriteBatch.DrawString(gameFont, gameText, position3, Color.SteelBlue);
+
+            }
+
+
+            spriteBatch.End();
 			base.Draw(gameTime);
+
 		}
 	}
 }
