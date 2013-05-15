@@ -16,18 +16,18 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 
-//using Microsoft.Kinect.Toolkit;
-
 namespace Pong
 {
+    enum ScalingType { paddleBig, paddleSmall };
+
     internal static class SkeletalCommonExtensions
     {
-        public static Joint ScaleTo(this Joint joint, int width, int height, float skeletonMaxX, float skeletonMaxY, int gameLevel)
+        public static Joint ScaleTo(this Joint joint, int width, int height, float skeletonMaxX, float skeletonMaxY, ScalingType scalingType)
         {
             Microsoft.Kinect.SkeletonPoint pos = new SkeletonPoint()
             {
-                X = Scale(width, skeletonMaxX, joint.Position.X),
-                Y = Scale(height, skeletonMaxY, joint.Position.Y), //-joint.Position.Y
+                X = Scale(width, skeletonMaxX, joint.Position.X, scalingType),
+                Y = Scale(height, skeletonMaxY, joint.Position.Y, scalingType), //-joint.Position.Y
                 Z = joint.Position.Z
             };
 
@@ -38,40 +38,47 @@ namespace Pong
 
         public static Joint ScaleTo(this Joint joint, int width, int height)
         {
-            return ScaleTo(joint, width, height, 1.0f, 1.0f, 1);
+            return ScaleTo(joint, width, height, 1.0f, 1.0f, ScalingType.paddleBig);
         }
 
-        private static float Scale(int maxPixel, float maxSkeleton, float position)
+        private static float Scale(int maxPixel, float maxSkeleton, float position, ScalingType scalingType)
         {
-            //position = (float)((((0.5 / 0.25f) / 2) * position) + (0.5 / 2));
-            //if (position > 0.5f)
-            //    position = 0.5f;
-            //if (position < 0)
-            //    position = 0;
 
-            //float value = ((((maxPixel / maxSkeleton) / 2) * position) + (maxPixel / 2));
-            //if (value > maxPixel)
-            //    return maxPixel;
-            //if (value < 0)
-            //    return 0;
-            //return value;
+            int value = 0;
 
-            //Make sure the hand position is within the boundaries of the 0.5 - 0.0 scaled set
-            if (position > 0.5f)
-                return 0;
-            if (position < 0)
-                return maxPixel;
+            if (scalingType == ScalingType.paddleBig) { //smaller area for the arm to swing up and down for the paddle to move
 
-            //Make the sure the position is positive so the hand position is being used properly
-            //position = Math.Abs(position);
+                //Make sure the hand position is within the boundaries of the 0.5 - 0.0 scaled set
+                if (position > 0.5f)
+                    return 0;
+                if (position < 0)
+                    return maxPixel;
 
-            //Get the percentage of the hand position within the 0.5 - 0.0 scaled set
-            float percent = position / maxSkeleton; 
+                //Get the percentage of the hand position within the 0.5 to 0.0 scaled set
+                float percent = position / maxSkeleton;
 
-            //Get the new position of the bat using the scaled hand position
-            int value = (int)(maxPixel - (maxPixel * percent));
+                //Get the new position of the bat using the scaled hand position
+                value = (int)(maxPixel - (maxPixel * percent));
 
-            //Return the new bat position
+            } else if (scalingType == ScalingType.paddleSmall) { //bigger area for the arm to swing up and down for the paddle to move
+
+                //Make sure the hand position is within the boundaries of the 1.0 to -0.5 scaled set
+                if (position > 1.0f)
+                    return 0;
+                if (position < -0.5f)
+                    return maxPixel;
+
+                //Change the range so that we can work with the negative values of the hand position
+                position += 1;
+
+                //Get the percentage of the hand position within the 0.5 - 0.0 scaled set
+                float percent = position / maxSkeleton;
+
+                //Get the new position of the bat using the scaled hand position
+                value = (int)(maxPixel - (maxPixel * percent));
+            }
+
+            //Return the new postion of the paddle scaled
             return value;
         }
     }
@@ -252,38 +259,44 @@ namespace Pong
                         Joint jointLeft = skel.Joints[JointType.HandLeft];
 
                         int handRightY = 0;
-
-                        //need to add in left hand stuff
-
                         int handLeftY = 0;
 
-                        if (gameLevel == 0)
+                        handPos = jointRight.Position.Y; //for testing purposes, can be deleted for release version   
+
+                        switch (gameLevel)
                         {
-                            Joint jointHead = skel.Joints[JointType.Head];
-
-                            if (jointRight.Position.Y >= jointHead.Position.Y)
-                            {
-                                gameLevel++;
-                            }
+                            case 0: 
+                                Joint jointHead = skel.Joints[JointType.Head];
+                                if (jointRight.Position.Y >= jointHead.Position.Y)
+                                {
+                                    gameLevel++;
+                                }
+                                break;
+                            //gamelevel 1 = one big
+                            case 1: 
+                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                break;
+                            //gamelevel 2 = one small
+                            case 2:
+                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 1.0f, 1.0f, ScalingType.paddleSmall).Position.Y;
+                                break;
+                            //gamelevel 3 = two big
+                            case 3:
+                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                break;
+                            //gamelevel 4 = one big, one small
+                            case 4:
+                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 1.0f, 1.0f, ScalingType.paddleSmall).Position.Y;
+                                break;
+                            default: break;
                         }
-                        else
-                        {
-                            //right hand = red paddle and ball
 
-                            handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
+                        //if multiplayer blah blah blah
 
-                            //left hand = blue paddle and ball
-
-                            handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, gameLevel).Position.Y;
-
-                            //if multiplayer blah blah blah
-
-                            handPos = jointRight.Position.Y;
-
-                            ourPaddleRectRight.Y = handRightY;
-
-                            ourPaddleRectLeft.Y = handLeftY;
-                        }
+                        ourPaddleRectRight.Y = handRightY;
+                        ourPaddleRectLeft.Y = handLeftY;
 
                         break;
                     }
