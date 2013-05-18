@@ -99,8 +99,11 @@ namespace Pong
 		
 		Texture2D dotTexture = null, ballTexture = null;
 		
-		Rectangle ourPaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
-        Rectangle ourPaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
+		Rectangle player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
+        Rectangle player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
+
+        Rectangle player2PaddleRectRight = new Rectangle(kGameWidth - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
+        Rectangle player2PaddleRectLeft = new Rectangle(kGameWidth - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
 
 		Rectangle aiPaddleRectRed;
         Rectangle aiPaddleRectBlue;
@@ -117,6 +120,9 @@ namespace Pong
         int player1Score = 0;
         int player2Score = 0;
 
+        int player1GameScore = 0;
+        int player2GameScore = 0;
+
         SpriteFont gameFont;
         SpriteFont titleFont;
 
@@ -132,6 +138,9 @@ namespace Pong
         DateTime time = new DateTime();
 
         int gameLevel = 0;
+        int gameMode = 0;
+
+        enum playerMode { singlePlayer, multiPlayer };
 
         /// <summary>
         /// Active Kinect sensor
@@ -161,6 +170,9 @@ namespace Pong
                 gameText = "Player 1 Wins!";
                 ballRedVelocity = new Vector2(0.0f, 0.0f);
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
+                //Progress the game and tally "Game" score
+                gameLevel++;
+                player1GameScore++;
             }
             else if (player2Score >= 3)
             {
@@ -168,36 +180,48 @@ namespace Pong
                 gameText = "AI Wins!";
                 ballRedVelocity = new Vector2(0.0f, 0.0f);
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
+                //Progress the game and tally "Game" score
+                gameLevel++;
+                player2GameScore++;
             }
             else
             {
-                //randomly create a velocity for the red ball
-                ballRedVelocity = new Vector2((float)new Random(time.Millisecond).Next(-10, 10), (float)new Random(time.Millisecond).Next(-10, 10));
-                while (ballRedVelocity.X == 0 || (ballRedVelocity.X >= -6 && ballRedVelocity.X <= 0) || (ballRedVelocity.X <= 6 && ballRedVelocity.X >= 0)) {
-                    ballRedVelocity.X = new Random().Next(-10, 10);
-                }
-                while (ballRedVelocity.Y == 0 || (ballRedVelocity.Y >= -6 && ballRedVelocity.Y <= 0) || (ballRedVelocity.Y <= 6 && ballRedVelocity.Y >= 0))
+                //randomly create a velocity for the blue ball
+                ballBlueVelocity = RandomVelocity();
+
+                if (gameLevel == 3 || gameLevel == 4)
                 {
-                    ballRedVelocity.Y = new Random().Next(-10, 10);
+                    //randomly create a velocity for the red ball
+                    ballRedVelocity = RandomVelocity();
                 }
+
+                //Update red ball velocity to be displayed (testing only)
                 ballRedVelocityX = (int)ballRedVelocity.X;
                 ballRedVelocityY = (int)ballRedVelocity.Y;
-
-                //randomly create a velocity for the blue ball
-                ballBlueVelocity = new Vector2((float)new Random(time.Millisecond).Next(-10, 10), (float)new Random(time.Millisecond).Next(-10, 10));
-                while (ballBlueVelocity.X == 0 || (ballBlueVelocity.X >= -6 && ballBlueVelocity.X <= 0) || (ballBlueVelocity.X <= 6 && ballBlueVelocity.X >= 0))
-                {
-                    ballBlueVelocity.X = new Random().Next(-10, 10);
-                }
-                while (ballBlueVelocity.Y == 0 || (ballBlueVelocity.Y >= -6 && ballBlueVelocity.Y <= 0) || (ballBlueVelocity.Y <= 6 && ballBlueVelocity.Y >= 0))
-                {
-                    ballBlueVelocity.Y = new Random().Next(-10, 10);
-                }
+                
+                //Update blue ball velocity to be displayed (testing only)
                 ballBlueVelocityX = (int)ballBlueVelocity.X;
                 ballBlueVelocityY = (int)ballBlueVelocity.Y;
             }
 
 		}
+
+        private Vector2 RandomVelocity()
+        {
+            Vector2 randomVelocity = new Vector2();
+
+            randomVelocity = new Vector2((float)new Random(time.Millisecond).Next(-10, 10), (float)new Random(time.Millisecond).Next(-10, 10));
+            while (randomVelocity.X == 0 || (randomVelocity.X >= -6 && randomVelocity.X <= 0) || (randomVelocity.X <= 6 && randomVelocity.X >= 0))
+            {
+                randomVelocity.X = new Random().Next(-10, 10);
+            }
+            while (randomVelocity.Y == 0 || (randomVelocity.Y >= -6 && randomVelocity.Y <= 0) || (randomVelocity.Y <= 6 && randomVelocity.Y >= 0))
+            {
+                randomVelocity.Y = new Random().Next(-10, 10);
+            }
+
+            return randomVelocity;
+        }
 		
 		protected override void Initialize()
 		{
@@ -294,9 +318,22 @@ namespace Pong
                         }
 
                         //if multiplayer blah blah blah
-
-                        ourPaddleRectRight.Y = handRightY;
-                        ourPaddleRectLeft.Y = handLeftY;
+                        if (gameMode == (int)playerMode.singlePlayer)
+                        {
+                            if (skel == skeletons[0])
+                            {
+                                player1PaddleRectRight.Y = handRightY;
+                                player1PaddleRectLeft.Y = handLeftY;
+                            }
+                        }
+                        else if (gameMode == (int)playerMode.multiPlayer)
+                        {
+                            if (skel == skeletons[1])
+                            {
+                                player2PaddleRectRight.Y = handRightY;
+                                player2PaddleRectLeft.Y = handLeftY;
+                            }
+                        }
 
                         break;
                     }
@@ -375,7 +412,7 @@ namespace Pong
 				velocityRed.X *= -1;
 				collision = BallCollision.RightPaddle;
 			}
-			else if (ourPaddleRectLeft.Intersects(enclosingRectRed))
+			else if (player1PaddleRectLeft.Intersects(enclosingRectRed))
 			{
 				velocityRed.X *= -1;
 				collision = BallCollision.LeftPaddle;
@@ -414,7 +451,7 @@ namespace Pong
                 velocityBlue.X *= -1;
                 collision = BallCollision.RightPaddle;
             }
-            else if (ourPaddleRectRight.Intersects(enclosingRectBlue))
+            else if (player1PaddleRectRight.Intersects(enclosingRectBlue))
             {
                 velocityBlue.X *= -1;
                 collision = BallCollision.LeftPaddle;
@@ -443,10 +480,15 @@ namespace Pong
             {
                 player1Score = 0;
                 player2Score = 0;
+                player1GameScore = 0;
+                player2GameScore = 0;
+                gameLevel = 0;
+                gameMode = (int)playerMode.singlePlayer;
                 gameText = "";
                 RestartGame();
             }
 
+            //need to change this to a switch statement most likely, to add gamelevel mechanics
             if (gameLevel == 0)
             {
             }
@@ -572,10 +614,51 @@ namespace Pong
             }
             else
             {
+                //skeleton code for multiplayer and singleplayer with gamelevel mechanics
+                if (gameMode == (int)playerMode.singlePlayer)
+                {
 
+                    switch (gameLevel)
+                    {
+                        case 1:
+
+                            break;
+                        case 2:
+
+                            break;
+                        case 3:
+
+                            break;
+                        case 4:
+
+                            break;
+                        default: break;
+                    }
+                }
+                else if (gameMode == (int)playerMode.multiPlayer)
+                {
+
+                    switch (gameLevel)
+                    {
+                        case 1:
+
+                            break;
+                        case 2:
+
+                            break;
+                        case 3:
+
+                            break;
+                        case 4:
+
+                            break;
+                        default: break;
+                    }
+
+                }
                 //Draw the player's paddles
-			    spriteBatch.Draw(dotTexture, ourPaddleRectRight, Color.Blue);
-                spriteBatch.Draw(dotTexture, ourPaddleRectLeft, Color.Red);
+			    spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
+                spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
                 //Draw the AI's paddles
 			    spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.IndianRed);
                 spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
