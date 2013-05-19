@@ -15,6 +15,7 @@ using Coding4Fun.Kinect.WinForm;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
+using System.Diagnostics;
 
 namespace Pong
 {
@@ -83,6 +84,36 @@ namespace Pong
         }
     }
 
+    public class CountdownTimer
+    {
+        int count;
+        Stopwatch clock;
+
+        public CountdownTimer(int time)
+        {
+            count = time;
+            clock = new Stopwatch();
+        }
+
+        public int GetSeconds()
+        {
+            TimeSpan now = clock.Elapsed;
+            int secondsPassed = now.Seconds;
+            count -= secondsPassed;
+            if (count < 0) count = 0;
+            return count;
+        }
+
+        public void Start()
+        {
+            clock.Start();
+        }
+
+        public void Stop()
+        {
+            clock.Stop();
+        }
+    }
 
 	public class PongGame : Microsoft.Xna.Framework.Game
 	{
@@ -141,6 +172,8 @@ namespace Pong
 
         int gameLevel = 0;
         int gameMode = 0;
+
+        CountdownTimer timer = new CountdownTimer(5);
 
         enum playerMode { singlePlayer, multiPlayer };
 
@@ -835,8 +868,17 @@ namespace Pong
 
         private void drawTransitionScreen()
         {
-            // TODO draw transition screen with level number and timer
-            // Skeleton function
+            string level = "Level: " + gameLevel;
+            string message = "Get READY!";
+            string countdown = timer.GetSeconds().ToString();
+
+            Vector2 levelPosition = new Vector2(hMidPoint - (titleFont.MeasureString(level).X / 2), vMidPoint - 50);
+            Vector2 msgPosition = new Vector2(hMidPoint - (gameFont.MeasureString(message).X / 2), levelPosition.Y + 50);
+            Vector2 timePosition = new Vector2(hMidPoint - (gameFont.MeasureString(countdown).X / 2), levelPosition.Y + 70);
+
+            spriteBatch.DrawString(titleFont, (level), levelPosition, Color.Black);
+            spriteBatch.DrawString(gameFont, (message), msgPosition, Color.Black);
+            spriteBatch.DrawString(gameFont, (countdown), timePosition, Color.Black);
         }
 
         private void drawScore()
@@ -845,13 +887,13 @@ namespace Pong
             string score = player1Score + " | " + player2Score;
 
             Vector2 levelPosition = new Vector2(hMidPoint - (gameFont.MeasureString(level).X / 2), 10);
-            Vector2 scorePosition = new Vector2(hMidPoint - (gameFont.MeasureString(score).X / 2), 50);
+            Vector2 scorePosition = new Vector2(hMidPoint - (gameFont.MeasureString(score).X / 2), 30);
 
             spriteBatch.DrawString(gameFont, (level), levelPosition, Color.Black);
             spriteBatch.DrawString(gameFont, (score), scorePosition, Color.Black);
 
             // TODO remove debug output below:
-            Vector2 position2 = new Vector2(500.0f, 30.0f);
+            Vector2 position2 = new Vector2(500.0f, 50.0f);
             Vector2 position3 = new Vector2(500.0f, 350.0f);
             Vector2 position5 = new Vector2(500.0f, 70.0f);
 
