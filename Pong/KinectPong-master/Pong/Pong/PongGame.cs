@@ -558,6 +558,34 @@ namespace Pong
                 RestartGame();
             }
 
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1) {
+                gameLevel = 1;
+                player1Score = 0;
+                player2Score = 0;
+                gameText = "";
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2) {
+                gameLevel = 2;
+                player1Score = 0;
+                player2Score = 0;
+                gameText = "";
+            }
+            
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3) {
+                gameLevel = 3;
+                player1Score = 0;
+                player2Score = 0;
+                gameText = "";
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4) {
+                gameLevel = 4;
+                player1Score = 0;
+                player2Score = 0;
+                gameText = "";
+            }
+
             //need to change this to a switch statement most likely, to add gamelevel mechanics
             if (gameLevel == 0)
             {
@@ -636,21 +664,15 @@ namespace Pong
                     if (ballCenterRed < aiPaddleCenterRed)
                     {
                         aiPaddleRectRed.Y -= kMaxAIPaddleVelocity;
-                        Console.WriteLine("aiPaddleRecRed.Y: " + aiPaddleRectRed.Y);
-                        Console.WriteLine("kMaxAIPaddleVelocity:" + kMaxAIPaddleVelocity);
                     }
                     else if (ballCenterRed > aiPaddleCenterRed)
                     {
                         aiPaddleRectRed.Y += kMaxAIPaddleVelocity;
-                        Console.WriteLine("aiPaddleRecRed.Y: " + aiPaddleRectRed.Y);
-                        Console.WriteLine("kMaxAIPaddleVelocity:" + kMaxAIPaddleVelocity);
                     }
 
                     if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
                     {
                         aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
-                        Console.WriteLine("aiPaddleRecRed.Y: " + aiPaddleRectRed.Y);
-                        Console.WriteLine("ballCenterRed: " + ballCenterRed);
                     }
                 }
 
@@ -659,21 +681,15 @@ namespace Pong
                     if (ballCenterBlue < aiPaddleCenterBlue)
                     {
                         aiPaddleRectBlue.Y -= kMaxAIPaddleVelocity;
-                        Console.WriteLine("aiPaddleRecBlue.Y: " + aiPaddleRectBlue.Y);
-                        Console.WriteLine("kMaxAIPaddleVelocity:" + kMaxAIPaddleVelocity);
                     }
                     else if (ballCenterBlue > aiPaddleCenterBlue)
                     {
                         aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
-                        Console.WriteLine("aiPaddleRecBlue.Y: " + aiPaddleRectBlue.Y);
-                        Console.WriteLine("kMaxAIPaddleVelocity:" + kMaxAIPaddleVelocity);
                     }
 
                     if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
                     {
                         aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
-                        Console.WriteLine("aiPaddleRecBlue.Y: " + aiPaddleRectBlue.Y);
-                        Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
                     }
                 }
 
