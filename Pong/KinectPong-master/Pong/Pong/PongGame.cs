@@ -414,7 +414,7 @@ namespace Pong
                 float oldVelocityX = velocityRed.X;
 				velocityRed.X *= -1;
 				//Make sure the ball doesn't get stuck within the AI's paddle
-                if (enclosingRectRed.X != kGameWidth / 2)
+                if ((enclosingRectRed.X + enclosingRectRed.Width / 2) != kGameWidth / 2)
                 {
                     if ((velocityRed.X * -1) == oldVelocityX)
                     {
@@ -436,7 +436,7 @@ namespace Pong
                 float oldVelocityX = velocityRed.X;
                 velocityRed.X *= -1;
                 //Make sure the ball doesn't get stuck within the player's paddle
-                if (enclosingRectRed.X != kGameWidth / 2)
+                if ((enclosingRectRed.X + enclosingRectRed.Width / 2) != kGameWidth / 2)
                 {
                     if ((velocityRed.X * -1) == oldVelocityX)
                     {
@@ -487,7 +487,7 @@ namespace Pong
                 float oldVelocityX = velocityBlue.X;
                 velocityBlue.X *= -1;
                 //Checking to make sure the ball doesn't get stuck within the AI's paddle
-                if (enclosingRectBlue.X != kGameWidth / 2)
+                if ((enclosingRectBlue.X + enclosingRectBlue.Width / 2) != kGameWidth / 2)
                 {
                     if ((velocityBlue.X * -1) == oldVelocityX)
                     {
@@ -502,7 +502,6 @@ namespace Pong
                         }
                     }
                 }
-                Console.WriteLine("velocityBlue.X: " + velocityBlue.X);
                 collision = BallCollision.RightPaddle;
             }
             else if (player1PaddleRectRight.Intersects(enclosingRectBlue))
@@ -510,7 +509,7 @@ namespace Pong
                 float oldVelocityX = velocityBlue.X;
                 velocityBlue.X *= -1;
                 //Checking to make sure the ball doesn't get stuck within the player's paddle
-                if (enclosingRectBlue.X != kGameWidth / 2)
+                if ((enclosingRectBlue.X + enclosingRectBlue.Width / 2)  != kGameWidth / 2)
                 {
                     if ((velocityBlue.X * -1) == oldVelocityX)
                     {
@@ -525,7 +524,6 @@ namespace Pong
                         }
                     }
                 }
-                Console.WriteLine("velocityBlue.Y: " + velocityBlue.Y);
                 collision = BallCollision.LeftPaddle;
             }
             else if (enclosingRectBlue.X >= GraphicsDevice.Viewport.Width - kBallWidth)
@@ -588,11 +586,13 @@ namespace Pong
                 gameText = "";
             }
 
-            //need to change this to a switch statement most likely, to add gamelevel mechanics
-            if (gameLevel == 0)
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad5))
             {
+                gameLevel = 5;
+                gameText = "";
             }
-            else
+
+            if (gameLevel > 0 && gameLevel < 5)
             {
 
                 BallCollision collisionRed = AdjustBallRedPositionWithScreenBounds(ref ballRedRect, ref ballRedVelocity);
@@ -709,12 +709,16 @@ namespace Pong
             {
                 drawTitleScreen();
             }
-            else
+            else if (gameLevel < 5)
             {
 
                 //skeleton code for multiplayer and singleplayer with gamelevel mechanics
                 if (gameMode == (int)playerMode.singlePlayer)
                 {
+
+                    player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
+
+                    aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
 
                     if (gameLevel == 2 || gameLevel == 4)
                     {
@@ -777,6 +781,10 @@ namespace Pong
 
                 drawScore();
 
+            }
+            else
+            {
+                drawEndScreen();
             }
 
 			spriteBatch.End();
