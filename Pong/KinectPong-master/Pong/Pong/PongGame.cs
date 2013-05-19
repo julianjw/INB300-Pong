@@ -440,20 +440,66 @@ namespace Pong
             if (enclosingRectBlue.Y >= GraphicsDevice.Viewport.Height - kBallHeight)
             {
                 velocityBlue.Y *= -1;
+                if (velocityBlue.Y == -0.5)
+                {
+                    Console.WriteLine("This is wrong v1");
+                }
+                Console.WriteLine("velocityBlue.Y: " + velocityBlue.Y);
             }
             else if (enclosingRectBlue.Y <= 0)
             {
                 velocityBlue.Y *= -1;
+                if (velocityBlue.Y == -0.5)
+                {
+                    Console.WriteLine("This is wrong v2");
+                }
+                Console.WriteLine("velocityBlue.Y: " + velocityBlue.Y);
             }
 
             if (aiPaddleRectBlue.Intersects(enclosingRectBlue))
             {
+                float oldVelocityX = velocityBlue.X;
                 velocityBlue.X *= -1;
+                //Checking to make sure the ball doesn't get stuck within the AI's paddle
+                if (enclosingRectBlue.X != kGameWidth / 2)
+                {
+                    if ((velocityBlue.X * -1) == oldVelocityX)
+                    {
+                        enclosingRectBlue.X -= 20;
+                        if (velocityBlue.X > 0)
+                        {
+                            velocityBlue.X = velocityBlue.X * -1;
+                        }
+                        else if (velocityBlue.X == 0)
+                        {
+                            velocityBlue.X = -0.5f;
+                        }
+                    }
+                }
+                Console.WriteLine("velocityBlue.X: " + velocityBlue.X);
                 collision = BallCollision.RightPaddle;
             }
             else if (player1PaddleRectRight.Intersects(enclosingRectBlue))
             {
+                float oldVelocityX = velocityBlue.X;
                 velocityBlue.X *= -1;
+                //Checking to make sure the ball doesn't get stuck within the player's paddle
+                if (enclosingRectBlue.X != kGameWidth / 2)
+                {
+                    if ((velocityBlue.X * -1) == oldVelocityX)
+                    {
+                        enclosingRectBlue.X += 20;
+                        if (velocityBlue.X > 0)
+                        {
+                            velocityBlue.X = velocityBlue.X * -1;
+                        }
+                        else if (velocityBlue.X == 0)
+                        {
+                            velocityBlue.X = 0.5f;
+                        }
+                    }
+                }
+                Console.WriteLine("velocityBlue.Y: " + velocityBlue.Y);
                 collision = BallCollision.LeftPaddle;
             }
             else if (enclosingRectBlue.X >= GraphicsDevice.Viewport.Width - kBallWidth)
@@ -566,15 +612,21 @@ namespace Pong
                     if (ballCenterRed < aiPaddleCenterRed)
                     {
                         aiPaddleRectRed.Y -= kMaxAIPaddleVelocity;
+                        Console.WriteLine("aiPaddleRecRed.Y: " + aiPaddleRectRed.Y);
+                        Console.WriteLine("kMaxAIPaddleVelocity:" + kMaxAIPaddleVelocity);
                     }
                     else if (ballCenterRed > aiPaddleCenterRed)
                     {
                         aiPaddleRectRed.Y += kMaxAIPaddleVelocity;
+                        Console.WriteLine("aiPaddleRecRed.Y: " + aiPaddleRectRed.Y);
+                        Console.WriteLine("kMaxAIPaddleVelocity:" + kMaxAIPaddleVelocity);
                     }
 
                     if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
                     {
                         aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
+                        Console.WriteLine("aiPaddleRecRed.Y: " + aiPaddleRectRed.Y);
+                        Console.WriteLine("ballCenterRed: " + ballCenterRed);
                     }
                 }
 
@@ -583,15 +635,21 @@ namespace Pong
                     if (ballCenterBlue < aiPaddleCenterBlue)
                     {
                         aiPaddleRectBlue.Y -= kMaxAIPaddleVelocity;
+                        Console.WriteLine("aiPaddleRecBlue.Y: " + aiPaddleRectBlue.Y);
+                        Console.WriteLine("kMaxAIPaddleVelocity:" + kMaxAIPaddleVelocity);
                     }
                     else if (ballCenterBlue > aiPaddleCenterBlue)
                     {
                         aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
+                        Console.WriteLine("aiPaddleRecBlue.Y: " + aiPaddleRectBlue.Y);
+                        Console.WriteLine("kMaxAIPaddleVelocity:" + kMaxAIPaddleVelocity);
                     }
 
                     if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
                     {
                         aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
+                        Console.WriteLine("aiPaddleRecBlue.Y: " + aiPaddleRectBlue.Y);
+                        Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
                     }
                 }
 
