@@ -171,6 +171,7 @@ namespace Pong
         DateTime time = new DateTime();
 
         int gameLevel = 0;
+        int currentGameLevel = 0;
         int gameMode = 0;
 
         CountdownTimer timer = new CountdownTimer(5);
@@ -216,6 +217,7 @@ namespace Pong
                 ballRedVelocity = new Vector2(0.0f, 0.0f);
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
+                currentGameLevel = gameLevel;
                 gameLevel = 6;
                 player1GameScore++;
             }
@@ -226,6 +228,7 @@ namespace Pong
                 ballRedVelocity = new Vector2(0.0f, 0.0f);
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
+                currentGameLevel = gameLevel;
                 gameLevel = 6;
                 player2GameScore++;
             }
@@ -874,7 +877,7 @@ namespace Pong
         {
             timer.Start();
 
-            string level = "Level: " + gameLevel;
+            string level = "Level: " + (currentGameLevel + 1);
             string message = "Get READY!";
             string countdown = timer.GetSeconds().ToString();
 
@@ -885,6 +888,11 @@ namespace Pong
             spriteBatch.DrawString(titleFont, (level), levelPosition, Color.Black);
             spriteBatch.DrawString(gameFont, (message), msgPosition, Color.Black);
             spriteBatch.DrawString(gameFont, (countdown), timePosition, Color.Black);
+
+            if (timer.GetSeconds() == 0)
+            {
+                gameLevel = currentGameLevel + 1;
+            }
         }
 
         private void drawScore()
