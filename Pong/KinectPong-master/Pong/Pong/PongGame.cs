@@ -513,7 +513,7 @@ namespace Pong
                     if ((velocityBlue.X * -1) == oldVelocityX)
                     {
                         enclosingRectBlue.X += 20;
-                        if (velocityBlue.X > 0)
+                        if (velocityBlue.X < 0)
                         {
                             velocityBlue.X = velocityBlue.X * -1;
                         }
@@ -558,28 +558,28 @@ namespace Pong
                 RestartGame();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1) {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1)) {
                 gameLevel = 1;
                 player1Score = 0;
                 player2Score = 0;
                 gameText = "";
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2) {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2)) {
                 gameLevel = 2;
                 player1Score = 0;
                 player2Score = 0;
                 gameText = "";
             }
             
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3) {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3)) {
                 gameLevel = 3;
                 player1Score = 0;
                 player2Score = 0;
                 gameText = "";
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4) {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4)) {
                 gameLevel = 4;
                 player1Score = 0;
                 player2Score = 0;
