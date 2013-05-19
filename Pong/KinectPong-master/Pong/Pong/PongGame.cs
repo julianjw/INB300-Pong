@@ -837,16 +837,21 @@ namespace Pong
 
         private void drawScore()
         {
+            string level = "Level: " + gameLevel;
+            string score = player1Score + " | " + player2Score;
 
-            Vector2 position = new Vector2(500.0f, 10.0f);
+            Vector2 levelPosition = new Vector2(hMidPoint - (gameFont.MeasureString(level).X / 2), 10);
+            Vector2 scorePosition = new Vector2(hMidPoint - (gameFont.MeasureString(score).X / 2), 50);
+
+            spriteBatch.DrawString(gameFont, (level), levelPosition, Color.Black);
+            spriteBatch.DrawString(gameFont, (score), scorePosition, Color.Black);
+
+            // TODO remove debug output below:
             Vector2 position2 = new Vector2(500.0f, 30.0f);
             Vector2 position3 = new Vector2(500.0f, 350.0f);
-            Vector2 position4 = new Vector2(500.0f, 50.0f);
             Vector2 position5 = new Vector2(500.0f, 70.0f);
 
-            spriteBatch.DrawString(gameFont, (player1Score + " | " + player2Score), position, Color.Black);
             spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos), position2, Color.Black);
-            spriteBatch.DrawString(gameFont, ("Game Level: " + gameLevel), position4, Color.Black);
             spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position5, Color.Black);
             spriteBatch.DrawString(gameFont, gameText, position3, Color.SteelBlue);
         }
