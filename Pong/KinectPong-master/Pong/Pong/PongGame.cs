@@ -216,7 +216,7 @@ namespace Pong
                 ballRedVelocity = new Vector2(0.0f, 0.0f);
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
-                gameLevel++;
+                gameLevel = 6;
                 player1GameScore++;
             }
             else if (player2Score >= 3)
@@ -226,7 +226,7 @@ namespace Pong
                 ballRedVelocity = new Vector2(0.0f, 0.0f);
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
-                gameLevel++;
+                gameLevel = 6;
                 player2GameScore++;
             }
             else
@@ -808,7 +808,11 @@ namespace Pong
                 drawScore();
 
             }
-            else
+            else if (gameLevel == 6)
+            {
+                drawTransitionScreen();
+
+            } else
             {
                 drawEndScreen();
             }
@@ -868,6 +872,8 @@ namespace Pong
 
         private void drawTransitionScreen()
         {
+            timer.Start();
+
             string level = "Level: " + gameLevel;
             string message = "Get READY!";
             string countdown = timer.GetSeconds().ToString();
