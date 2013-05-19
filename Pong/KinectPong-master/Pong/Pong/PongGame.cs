@@ -179,6 +179,9 @@ namespace Pong
 
         enum playerMode { singlePlayer, multiPlayer };
 
+        SystemSound bounceSound;
+        SystemSound backgroundSound;
+
         /// <summary>
         /// Active Kinect sensor
         /// </summary>
@@ -197,7 +200,8 @@ namespace Pong
 		{
             if (gameLevel == 0)
             {
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\BackgroundMusic1.wav")).Play();
+                (new SoundPlayer(@"Pong\PongContent\BackgroundMusic1.wav")).Play();
+                //(new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\BackgroundMusic1.wav")).Play();
             }
 
             aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
@@ -227,7 +231,8 @@ namespace Pong
                 if (gameLevel == 4)
                 {
                     gameLevel = 5;
-                    (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\gameover.wav")).Play();
+                    (new SoundPlayer(@"Pong\PongContent\gameover.wav")).Play();
+                    //(new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\PongContent\gameover.wav")).Play();
                 }
                 else
                 {
@@ -247,7 +252,8 @@ namespace Pong
                 if (gameLevel == 4)
                 {
                     gameLevel = 5;
-                    (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\gameover.wav")).Play();
+                    (new SoundPlayer(@"Pong\PongContent\gameover.wav")).Play();
+                    //(new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\PongContent\gameover.wav")).Play();
                 }
                 else
                 {
@@ -422,6 +428,9 @@ namespace Pong
 
 			dotTexture = Content.Load<Texture2D>("Dot");
 			ballTexture = Content.Load<Texture2D>("Ball");
+
+            bounceSound = Content.Load<SystemSound>("bounce");
+            backgroundSound = Content.Load<SystemSound>("BackgroundMusic1");
 		}
 		
 		protected override void UnloadContent()
