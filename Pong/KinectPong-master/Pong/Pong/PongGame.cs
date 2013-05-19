@@ -69,10 +69,10 @@ namespace Pong
                     return maxPixel;
 
                 //Change the range so that we can work with the negative values of the hand position
-                position += 1;
+                position += 0.5f;
 
-                //Get the percentage of the hand position within the 0.5 - 0.0 scaled set
-                float percent = position / maxSkeleton;
+                //Get the percentage of the hand position within the 2 to 0.5 (1 to -0.5) scaled set
+                float percent = position / (maxSkeleton + 0.5f);
 
                 //Get the new position of the bat using the scaled hand position
                 value = (int)(maxPixel - (maxPixel * percent));
@@ -709,9 +709,18 @@ namespace Pong
             }
             else
             {
+
                 //skeleton code for multiplayer and singleplayer with gamelevel mechanics
                 if (gameMode == (int)playerMode.singlePlayer)
                 {
+
+                    if (gameLevel == 2 || gameLevel == 4)
+                    {
+                        player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
+
+                        aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
+                    }
+
                     //Draw the player's paddles
                     spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
 
