@@ -16,6 +16,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Diagnostics;
+using System.Media;
 
 namespace Pong
 {
@@ -221,6 +222,7 @@ namespace Pong
                 if (gameLevel == 4)
                 {
                     gameLevel = 5;
+                    (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\gameover.wav")).Play();
                 }
                 else
                 {
@@ -240,6 +242,7 @@ namespace Pong
                 if (gameLevel == 4)
                 {
                     gameLevel = 5;
+                    (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\gameover.wav")).Play();
                 }
                 else
                 {
@@ -318,6 +321,8 @@ namespace Pong
                     this.sensor = null;
                 }
             }
+
+            //(new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\BackgroundMusic1.mp3")).Play();
 			
 			base.Initialize();
 		}
@@ -465,10 +470,12 @@ namespace Pong
 			if (enclosingRectRed.Y >= GraphicsDevice.Viewport.Height - kBallHeight)
 			{
 				velocityRed.Y *= -1;
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
 			}
 			else if (enclosingRectRed.Y <= 0)
 			{
 				velocityRed.Y *= -1;
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
 			}
 			
 			if (aiPaddleRectRed.Intersects(enclosingRectRed))
@@ -491,6 +498,7 @@ namespace Pong
                         }
                     }
                 }
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
                 collision = BallCollision.RightPaddle;
 			}
 			else if (player1PaddleRectLeft.Intersects(enclosingRectRed))
@@ -513,6 +521,7 @@ namespace Pong
                         }
                     }
                 }
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
 				collision = BallCollision.LeftPaddle;
 			}
 			else if (enclosingRectRed.X >= GraphicsDevice.Viewport.Width - kBallWidth)
@@ -538,10 +547,12 @@ namespace Pong
             if (enclosingRectBlue.Y >= GraphicsDevice.Viewport.Height - kBallHeight)
             {
                 velocityBlue.Y *= -1;
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
             }
             else if (enclosingRectBlue.Y <= 0)
             {
                 velocityBlue.Y *= -1;
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
             }
 
             if (aiPaddleRectBlue.Intersects(enclosingRectBlue))
@@ -564,6 +575,7 @@ namespace Pong
                         }
                     }
                 }
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
                 collision = BallCollision.RightPaddle;
             }
             else if (player1PaddleRectRight.Intersects(enclosingRectBlue))
@@ -586,6 +598,7 @@ namespace Pong
                         }
                     }
                 }
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
                 collision = BallCollision.LeftPaddle;
             }
             else if (enclosingRectBlue.X >= GraphicsDevice.Viewport.Width - kBallWidth)
