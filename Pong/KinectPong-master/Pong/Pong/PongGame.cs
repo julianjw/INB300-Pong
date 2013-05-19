@@ -409,12 +409,46 @@ namespace Pong
 			
 			if (aiPaddleRectRed.Intersects(enclosingRectRed))
 			{
+                float oldVelocityX = velocityRed.X;
 				velocityRed.X *= -1;
-				collision = BallCollision.RightPaddle;
+				//Make sure the ball doesn't get stuck within the AI's paddle
+                if (enclosingRectRed.X != kGameWidth / 2)
+                {
+                    if ((velocityRed.X * -1) == oldVelocityX)
+                    {
+                        enclosingRectRed.X -= 20;
+                        if (velocityRed.X > 0)
+                        {
+                            velocityRed.X = velocityRed.X * -1;
+                        }
+                        else if (velocityRed.X == 0)
+                        {
+                            velocityRed.X = -0.5f;
+                        }
+                    }
+                }
+                collision = BallCollision.RightPaddle;
 			}
 			else if (player1PaddleRectLeft.Intersects(enclosingRectRed))
 			{
-				velocityRed.X *= -1;
+                float oldVelocityX = velocityRed.X;
+                velocityRed.X *= -1;
+                //Make sure the ball doesn't get stuck within the player's paddle
+                if (enclosingRectRed.X != kGameWidth / 2)
+                {
+                    if ((velocityRed.X * -1) == oldVelocityX)
+                    {
+                        enclosingRectRed.X -= 20;
+                        if (velocityRed.X > 0)
+                        {
+                            velocityRed.X = velocityRed.X * -1;
+                        }
+                        else if (velocityRed.X == 0)
+                        {
+                            velocityRed.X = 0.5f;
+                        }
+                    }
+                }
 				collision = BallCollision.LeftPaddle;
 			}
 			else if (enclosingRectRed.X >= GraphicsDevice.Viewport.Width - kBallWidth)
@@ -440,20 +474,10 @@ namespace Pong
             if (enclosingRectBlue.Y >= GraphicsDevice.Viewport.Height - kBallHeight)
             {
                 velocityBlue.Y *= -1;
-                if (velocityBlue.Y == -0.5)
-                {
-                    Console.WriteLine("This is wrong v1");
-                }
-                Console.WriteLine("velocityBlue.Y: " + velocityBlue.Y);
             }
             else if (enclosingRectBlue.Y <= 0)
             {
                 velocityBlue.Y *= -1;
-                if (velocityBlue.Y == -0.5)
-                {
-                    Console.WriteLine("This is wrong v2");
-                }
-                Console.WriteLine("velocityBlue.Y: " + velocityBlue.Y);
             }
 
             if (aiPaddleRectBlue.Intersects(enclosingRectBlue))
