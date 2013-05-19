@@ -195,6 +195,11 @@ namespace Pong
 		
 		private void RestartGame()
 		{
+            if (gameLevel == 0)
+            {
+                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\BackgroundMusic1.wav")).Play();
+            }
+
             aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
             aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
 
@@ -321,8 +326,6 @@ namespace Pong
                     this.sensor = null;
                 }
             }
-
-            (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\BackgroundMusic1.wav")).Play();
 			
 			base.Initialize();
 		}
