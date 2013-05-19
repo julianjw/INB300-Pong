@@ -677,8 +677,8 @@ namespace Pong
 
                 spriteBatch.DrawString(gameFont, (player1Score + " | " + player2Score), position, Color.Black);
                 spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos),position2,Color.Black);
-                spriteBatch.DrawString(gameFont, ("Ball Velocity X: " + ballRedVelocityX), position4, Color.Black);
-                spriteBatch.DrawString(gameFont, ("Ball Velocity Y: " + ballRedVelocityY), position5, Color.Black);
+                spriteBatch.DrawString(gameFont, ("Game Level: " + gameLevel), position4, Color.Black);
+                spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position5, Color.Black);
                 spriteBatch.DrawString(gameFont, gameText, position3, Color.SteelBlue);
 
             }
