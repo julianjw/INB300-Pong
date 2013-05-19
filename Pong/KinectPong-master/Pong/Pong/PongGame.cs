@@ -99,9 +99,9 @@ namespace Pong
         {
             TimeSpan now = clock.Elapsed;
             int secondsPassed = now.Seconds;
-            count -= secondsPassed;
-            if (count < 0) count = 0;
-            return count;
+            int result = count - secondsPassed;
+            if (result < 0) result = 0;
+            return result;
         }
 
         public void Start()
