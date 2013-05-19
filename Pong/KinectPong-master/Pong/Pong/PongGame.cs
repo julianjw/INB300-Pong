@@ -689,10 +689,7 @@ namespace Pong
 
             if (gameLevel == 0)
             {
-                Vector2 titlePostion = new Vector2((kGameWidth/2) - 100, (kGameHeight/2) - 50);
-                Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
-                spriteBatch.DrawString(titleFont, ("PONG 3000"), titlePostion, Color.Black);
-                spriteBatch.DrawString(gameFont, ("Let's Pong It Up! Game Level: " + gameLevel), taglinePosition, Color.Black);
+                drawTitleScreen();
             }
             else
             {
@@ -751,17 +748,7 @@ namespace Pong
                 //spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
                 //spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
 
-                Vector2 position = new Vector2(500.0f, 10.0f);
-                Vector2 position2 = new Vector2(500.0f, 30.0f);
-                Vector2 position3 = new Vector2(500.0f, 350.0f);
-                Vector2 position4 = new Vector2(500.0f, 50.0f);
-                Vector2 position5 = new Vector2(500.0f, 70.0f);
-
-                spriteBatch.DrawString(gameFont, (player1Score + " | " + player2Score), position, Color.Black);
-                spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos),position2,Color.Black);
-                spriteBatch.DrawString(gameFont, ("Game Level: " + gameLevel), position4, Color.Black);
-                spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position5, Color.Black);
-                spriteBatch.DrawString(gameFont, gameText, position3, Color.SteelBlue);
+                drawScore();
 
             }
 
