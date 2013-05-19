@@ -795,6 +795,7 @@ namespace Pong
         {
             string player2 = "Player 2";
             string winner = "Player 1";
+            string endMessage = "";
             Vector2 titlePostion = new Vector2((kGameWidth / 2) - 100, (kGameHeight / 2) - 50);
             Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
             spriteBatch.DrawString(titleFont, ("PONG 9001"), titlePostion, Color.Black);
@@ -811,13 +812,15 @@ namespace Pong
 
             if (player1GameScore == player2GameScore)
             {
-                spriteBatch.DrawString(gameFont, ("Tie!"), taglinePosition, Color.Black); // TODO
+                endMessage = "Tie!";
             }
             else
             {
-                spriteBatch.DrawString(gameFont, (winner + " Wins!"), taglinePosition, Color.Black); // TODO
+                endMessage = winner + " Wins!";
             }
-            
+
+            spriteBatch.DrawString(gameFont, (endMessage), taglinePosition, Color.Black);
+
         }
 
         private void drawTransitionScreen()
