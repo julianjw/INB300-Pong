@@ -220,6 +220,7 @@ namespace Pong
                 currentGameLevel = gameLevel;
                 gameLevel = 6;
                 player1GameScore++;
+                timer = new CountdownTimer(5);
             }
             else if (player2Score >= 3)
             {
@@ -231,6 +232,7 @@ namespace Pong
                 currentGameLevel = gameLevel;
                 gameLevel = 6;
                 player2GameScore++;
+                timer = new CountdownTimer(5);
             }
             else
             {
@@ -604,7 +606,8 @@ namespace Pong
                 RestartGame();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1)) {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1))
+            {
                 gameLevel = 1;
                 player1Score = 0;
                 player2Score = 0;
@@ -612,15 +615,17 @@ namespace Pong
                 RestartGame();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2)) {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2))
+            {
                 gameLevel = 2;
                 player1Score = 0;
                 player2Score = 0;
                 gameText = "";
                 RestartGame();
             }
-            
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3)) {
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3))
+            {
                 gameLevel = 3;
                 player1Score = 0;
                 player2Score = 0;
@@ -628,7 +633,8 @@ namespace Pong
                 RestartGame();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4)) {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4))
+            {
                 gameLevel = 4;
                 player1Score = 0;
                 player2Score = 0;
@@ -642,8 +648,28 @@ namespace Pong
                 gameText = "";
             }
 
-            if (gameLevel > 0 && gameLevel < 5)
+            if (gameLevel == 6)
             {
+                timer.Start();
+
+                if (timer.GetSeconds() == 0)
+                {
+                    gameLevel = currentGameLevel + 1;
+                    currentGameLevel = 6;
+                    player1Score = 0;
+                    player2Score = 0;
+                    gameText = "";
+                    timer.Stop();
+                }
+            }
+            else if (gameLevel > 0 && gameLevel < 5)
+            {
+
+                if (currentGameLevel == 6)
+                {
+                    RestartGame();
+                    currentGameLevel = 0;
+                }
 
                 BallCollision collisionRed = AdjustBallRedPositionWithScreenBounds(ref ballRedRect, ref ballRedVelocity);
                 BallCollision collisionBlue = AdjustBallBluePositionWithScreenBounds(ref ballBlueRect, ref ballBlueVelocity);
@@ -745,8 +771,10 @@ namespace Pong
                     }
                 }
 
-                base.Update(gameTime);
+
             }
+
+            base.Update(gameTime);
         }
 		
 		protected override void Draw(GameTime gameTime)
@@ -758,6 +786,10 @@ namespace Pong
             if (gameLevel == 0)
             {
                 drawTitleScreen();
+            }
+            else if (gameLevel == 6)
+            {
+                drawTransitionScreen();
             }
             else if (gameLevel < 5)
             {
@@ -811,11 +843,7 @@ namespace Pong
                 drawScore();
 
             }
-            else if (gameLevel == 6)
-            {
-                drawTransitionScreen();
-
-            } else
+            else
             {
                 drawEndScreen();
             }
@@ -875,7 +903,6 @@ namespace Pong
 
         private void drawTransitionScreen()
         {
-            timer.Start();
 
             string level = "Level: " + (currentGameLevel + 1);
             string message = "Get READY!";
@@ -888,11 +915,6 @@ namespace Pong
             spriteBatch.DrawString(titleFont, (level), levelPosition, Color.Black);
             spriteBatch.DrawString(gameFont, (message), msgPosition, Color.Black);
             spriteBatch.DrawString(gameFont, (countdown), timePosition, Color.Black);
-
-            if (timer.GetSeconds() == 0)
-            {
-                gameLevel = currentGameLevel + 1;
-            }
         }
 
         private void drawScore()
