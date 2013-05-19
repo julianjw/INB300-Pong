@@ -573,6 +573,7 @@ namespace Pong
                 player1Score = 0;
                 player2Score = 0;
                 gameText = "";
+                RestartGame();
             }
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2)) {
@@ -580,6 +581,7 @@ namespace Pong
                 player1Score = 0;
                 player2Score = 0;
                 gameText = "";
+                RestartGame();
             }
             
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3)) {
@@ -587,6 +589,7 @@ namespace Pong
                 player1Score = 0;
                 player2Score = 0;
                 gameText = "";
+                RestartGame();
             }
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4)) {
@@ -594,6 +597,7 @@ namespace Pong
                 player1Score = 0;
                 player2Score = 0;
                 gameText = "";
+                RestartGame();
             }
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad5))
