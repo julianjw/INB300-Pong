@@ -685,5 +685,21 @@ namespace Pong
 			base.Draw(gameTime);
 
 		}
+
+        private void drawTitleScreen()
+        {
+            Vector2 titlePostion = new Vector2((kGameWidth / 2) - 100, (kGameHeight / 2) - 50);
+            Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
+            spriteBatch.DrawString(titleFont, ("PONG 3000"), titlePostion, Color.Black);
+            spriteBatch.DrawString(gameFont, ("Let's Pong It Up! Game Level: " + gameLevel), taglinePosition, Color.Black);
+        }
+
+        private void drawEndScreen()
+        {
+            Vector2 titlePostion = new Vector2((kGameWidth / 2) - 100, (kGameHeight / 2) - 50);
+            Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
+            spriteBatch.DrawString(titleFont, ("PONG 3000"), titlePostion, Color.Black);
+            spriteBatch.DrawString(gameFont, ("Winner text"), taglinePosition, Color.Black);
+        }
 	}
 }
