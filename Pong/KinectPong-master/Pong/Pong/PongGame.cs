@@ -320,11 +320,11 @@ namespace Pong
                         //if multiplayer blah blah blah
                         if (gameMode == (int)playerMode.singlePlayer)
                         {
-                            if (skel == skeletons[0])
-                            {
+                            //if (skel == skeletons[0])
+                            //{
                                 player1PaddleRectRight.Y = handRightY;
                                 player1PaddleRectLeft.Y = handLeftY;
-                            }
+                            //}
                         }
                         else if (gameMode == (int)playerMode.multiPlayer)
                         {
@@ -617,25 +617,28 @@ namespace Pong
                 //skeleton code for multiplayer and singleplayer with gamelevel mechanics
                 if (gameMode == (int)playerMode.singlePlayer)
                 {
+                    //Draw the player's paddles
+                    spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
 
-                    switch (gameLevel)
+                    //Draw the AI's paddles
+                    spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
+
+                    //Draw the ball
+                    spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
+
+                    if (gameLevel == 3 || gameLevel == 4)
                     {
-                        case 1:
+                        //Draw the player's paddles
+                        spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
 
-                            break;
-                        case 2:
+                        //Draw the AI's paddles
+                        spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.IndianRed);
 
-                            break;
-                        case 3:
-
-                            break;
-                        case 4:
-
-                            break;
-                        default: break;
+                        //Draw the ball
+                        spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
                     }
                 }
-                else if (gameMode == (int)playerMode.multiPlayer)
+                else if (gameMode == (int)playerMode.multiPlayer) //multiplayer skeleton code
                 {
 
                     switch (gameLevel)
@@ -656,15 +659,15 @@ namespace Pong
                     }
 
                 }
-                //Draw the player's paddles
-			    spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
-                spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
-                //Draw the AI's paddles
-			    spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.IndianRed);
-                spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
-                //Draw the ball
-			    spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
-                spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
+                ////Draw the player's paddles
+                //spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
+                //spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
+                ////Draw the AI's paddles
+                //spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.IndianRed);
+                //spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
+                ////Draw the ball
+                //spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
+                //spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
 
                 Vector2 position = new Vector2(500.0f, 10.0f);
                 Vector2 position2 = new Vector2(500.0f, 30.0f);
