@@ -163,6 +163,16 @@ namespace Pong
             aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
             aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
 
+            player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
+            player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
+
+            if (gameLevel == 2 || gameLevel == 4)
+            {
+                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
+
+                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
+            }
+
             ballRedRect = new Rectangle(500, 600, kBallWidth, kBallHeight);
             ballBlueRect = new Rectangle(500, 300, kBallWidth, kBallHeight);
 
@@ -715,18 +725,6 @@ namespace Pong
                 //skeleton code for multiplayer and singleplayer with gamelevel mechanics
                 if (gameMode == (int)playerMode.singlePlayer)
                 {
-
-                    player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
-
-                    aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
-
-                    if (gameLevel == 2 || gameLevel == 4)
-                    {
-                        player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
-
-                        aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
-                    }
-
                     //Draw the player's paddles
                     spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
 
@@ -769,15 +767,6 @@ namespace Pong
                     }
 
                 }
-                ////Draw the player's paddles
-                //spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
-                //spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
-                ////Draw the AI's paddles
-                //spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.IndianRed);
-                //spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
-                ////Draw the ball
-                //spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
-                //spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
 
                 drawScore();
 
