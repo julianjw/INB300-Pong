@@ -778,16 +778,37 @@ namespace Pong
         {
             Vector2 titlePostion = new Vector2((kGameWidth / 2) - 100, (kGameHeight / 2) - 50);
             Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
-            spriteBatch.DrawString(titleFont, ("PONG 3000"), titlePostion, Color.Black);
+            spriteBatch.DrawString(titleFont, ("PONG 9001"), titlePostion, Color.Black);
             spriteBatch.DrawString(gameFont, ("Let's Pong It Up! Game Level: " + gameLevel), taglinePosition, Color.Black);
         }
 
         private void drawEndScreen()
         {
+            string player2 = "Player 2";
+            string winner = "Player 1";
             Vector2 titlePostion = new Vector2((kGameWidth / 2) - 100, (kGameHeight / 2) - 50);
             Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
-            spriteBatch.DrawString(titleFont, ("PONG 3000"), titlePostion, Color.Black);
-            spriteBatch.DrawString(gameFont, ("Winner text"), taglinePosition, Color.Black); // TODO
+            spriteBatch.DrawString(titleFont, ("PONG 9001"), titlePostion, Color.Black);
+
+            if (gameMode == (int)playerMode.singlePlayer)
+            {
+                player2 = "Computer";
+            }
+
+            if (player1GameScore < player2GameScore)
+            {
+                winner = player2;
+            }
+
+            if (player1GameScore == player2GameScore)
+            {
+                spriteBatch.DrawString(gameFont, ("Tie!"), taglinePosition, Color.Black); // TODO
+            }
+            else
+            {
+                spriteBatch.DrawString(gameFont, (winner + " Wins!"), taglinePosition, Color.Black); // TODO
+            }
+            
         }
 
         private void drawTransitionScreen()
