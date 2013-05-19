@@ -91,6 +91,8 @@ namespace Pong
 		const int kBallWidth = 24, kBallHeight = 24;
 		const int kMaxAIPaddleVelocity = 7;
 		const int kGameWidth = 1360, kGameHeight = 800;
+        const int hMidPoint = kGameWidth / 2;
+        const int vMidPoint = kGameHeight / 2;
 		
 		bool passedCenter = false;
 		
@@ -785,10 +787,14 @@ namespace Pong
 
         private void drawTitleScreen()
         {
-            Vector2 titlePostion = new Vector2((kGameWidth / 2) - 100, (kGameHeight / 2) - 50);
-            Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
-            spriteBatch.DrawString(titleFont, ("PONG 9001"), titlePostion, Color.Black);
-            spriteBatch.DrawString(gameFont, ("Let's Pong It Up! Game Level: " + gameLevel), taglinePosition, Color.Black);
+            string title = "PONG 9001";
+            string tagline = "Let's Pong It Up! Game Level: " + gameLevel;
+
+            Vector2 titlePostion = new Vector2(hMidPoint - (titleFont.MeasureString(title).X / 2), vMidPoint - 50);
+            Vector2 taglinePosition = new Vector2(hMidPoint - (titleFont.MeasureString(tagline).X / 2), titlePostion.Y + 50);
+
+            spriteBatch.DrawString(titleFont, (title), titlePostion, Color.Black);
+            spriteBatch.DrawString(gameFont, (tagline), taglinePosition, Color.Black);
         }
 
         private void drawEndScreen()
@@ -796,9 +802,10 @@ namespace Pong
             string player2 = "Player 2";
             string winner = "Player 1";
             string endMessage = "";
-            Vector2 titlePostion = new Vector2((kGameWidth / 2) - 100, (kGameHeight / 2) - 50);
-            Vector2 taglinePosition = new Vector2(titlePostion.X - 50, titlePostion.Y + 50);
-            spriteBatch.DrawString(titleFont, ("PONG 9001"), titlePostion, Color.Black);
+            string endHeader = "PONG 9001";
+
+            Vector2 headerPosition = new Vector2(hMidPoint - (titleFont.MeasureString(endHeader).X / 2), vMidPoint - 50);
+            spriteBatch.DrawString(titleFont, (endHeader), headerPosition, Color.Black);
 
             if (gameMode == (int)playerMode.singlePlayer)
             {
@@ -819,6 +826,8 @@ namespace Pong
                 endMessage = winner + " Wins!";
             }
 
+
+            Vector2 taglinePosition = new Vector2(hMidPoint - (gameFont.MeasureString(endMessage).X / 2), headerPosition.Y + 50);
             spriteBatch.DrawString(gameFont, (endMessage), taglinePosition, Color.Black);
 
         }
