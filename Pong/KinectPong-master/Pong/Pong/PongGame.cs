@@ -218,9 +218,16 @@ namespace Pong
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
                 currentGameLevel = gameLevel;
-                gameLevel = 6;
+                if (gameLevel == 4)
+                {
+                    gameLevel = 5;
+                }
+                else
+                {
+                    gameLevel = 6;
+                    timer = new CountdownTimer(5);
+                }
                 player1GameScore++;
-                timer = new CountdownTimer(5);
             }
             else if (player2Score >= 3)
             {
@@ -230,9 +237,16 @@ namespace Pong
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
                 currentGameLevel = gameLevel;
-                gameLevel = 6;
+                if (gameLevel == 4)
+                {
+                    gameLevel = 5;
+                }
+                else
+                {
+                    gameLevel = 6;
+                    timer = new CountdownTimer(5);
+                }
                 player2GameScore++;
-                timer = new CountdownTimer(5);
             }
             else
             {
