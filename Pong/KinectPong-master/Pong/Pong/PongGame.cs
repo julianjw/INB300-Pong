@@ -799,7 +799,7 @@ namespace Pong
             string tagline = "Let's Pong It Up! Game Level: " + gameLevel;
 
             Vector2 titlePostion = new Vector2(hMidPoint - (titleFont.MeasureString(title).X / 2), vMidPoint - 50);
-            Vector2 taglinePosition = new Vector2(hMidPoint - (titleFont.MeasureString(tagline).X / 2), titlePostion.Y + 50);
+            Vector2 taglinePosition = new Vector2(hMidPoint - (gameFont.MeasureString(tagline).X / 2), titlePostion.Y + 50);
 
             spriteBatch.DrawString(titleFont, (title), titlePostion, Color.Black);
             spriteBatch.DrawString(gameFont, (tagline), taglinePosition, Color.Black);
