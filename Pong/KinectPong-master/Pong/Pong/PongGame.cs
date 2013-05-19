@@ -322,7 +322,7 @@ namespace Pong
                 }
             }
 
-            //(new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\BackgroundMusic1.mp3")).Play();
+            (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\BackgroundMusic1.wav")).Play();
 			
 			base.Initialize();
 		}
