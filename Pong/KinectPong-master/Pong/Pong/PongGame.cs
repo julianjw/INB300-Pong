@@ -207,7 +207,7 @@ namespace Pong
                 backgroundSoundInstance = backgroundSound.CreateInstance();
                 if (backgroundSoundInstance.State == SoundState.Stopped)
                 {
-                    backgroundSoundInstance.Volume = 0.75f;
+                    backgroundSoundInstance.Volume = 0.5f;
                     backgroundSoundInstance.IsLooped = true;
                     backgroundSoundInstance.Play();
                 }
@@ -244,6 +244,7 @@ namespace Pong
                 if (gameLevel == 4)
                 {
                     gameLevel = 5;
+                    currentGameLevel = 5;
                     backgroundSoundInstance.Pause();
                     gameoverSoundInstance.Play();
                     while (gameoverSoundInstance.State == SoundState.Playing)
@@ -270,6 +271,7 @@ namespace Pong
                 if (gameLevel == 4)
                 {
                     gameLevel = 5;
+                    currentGameLevel = 5;
                     backgroundSoundInstance.Pause();
                     gameoverSoundInstance.Play();
                     while (gameoverSoundInstance.State == SoundState.Playing)
@@ -805,7 +807,7 @@ namespace Pong
                 //AI Red Paddle
                 int aiPaddleCenterRed = aiPaddleRectRed.Center.Y;
 
-                if (predictedBallRedHeight > 0 && ballCenterRed != aiPaddleCenterRed)
+                if (predictedBallRedHeight > 0 && predictedBallBlueHeight != aiPaddleCenterRed)
                 {
                     if (ballCenterRed < aiPaddleCenterRed)
                     {
@@ -825,7 +827,7 @@ namespace Pong
                 //AI Blue Paddle
                 int aiPaddleCenterBlue = aiPaddleRectBlue.Center.Y;
 
-                if (predictedBallBlueHeight > 0 && ballCenterBlue != aiPaddleCenterBlue)
+                if (predictedBallBlueHeight > 0 && predictedBallBlueHeight != aiPaddleCenterBlue)
                 {
                     if (ballCenterBlue < aiPaddleCenterBlue)
                     {
@@ -835,13 +837,14 @@ namespace Pong
                     {
                         aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
                     }
-
+                    //WHY THE FUCK DOES IT NOT WORK
                     if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
                     {
                         if (gameLevel == 2 || gameLevel == 4)
                         {
                             aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
-                        } else {
+                        } else
+                        {
                             aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
                         }
                     }
