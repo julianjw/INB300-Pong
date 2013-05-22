@@ -203,17 +203,20 @@ namespace Pong
 		{
             if (gameLevel == 0)
             {
-                backgroundSound = Content.Load<SoundEffect>("BackgroundMusic1");
-                backgroundSoundInstance = backgroundSound.CreateInstance();
-                if (backgroundSoundInstance.State == SoundState.Stopped)
+                if (backgroundSound == null)
                 {
+                    backgroundSound = Content.Load<SoundEffect>("BackgroundMusic1");
+                    backgroundSoundInstance = backgroundSound.CreateInstance();
                     backgroundSoundInstance.Volume = 0.5f;
                     backgroundSoundInstance.IsLooped = true;
                     backgroundSoundInstance.Play();
                 }
                 else
                 {
-                    backgroundSoundInstance.Resume();
+                    if (backgroundSoundInstance.State == SoundState.Paused)
+                    {
+                        backgroundSoundInstance.Resume();
+                    }
                 }
             }
 
@@ -807,7 +810,7 @@ namespace Pong
                 //AI Red Paddle
                 int aiPaddleCenterRed = aiPaddleRectRed.Center.Y;
 
-                if (predictedBallRedHeight > 0 && predictedBallBlueHeight != aiPaddleCenterRed)
+                if (predictedBallRedHeight > 0 && predictedBallRedHeight != aiPaddleCenterRed)
                 {
                     if (ballCenterRed < aiPaddleCenterRed)
                     {
@@ -820,7 +823,7 @@ namespace Pong
 
                     if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
                     {
-                        aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
+                        aiPaddleRectRed.Y = (int)predictedBallRedHeight - (kPaddleHeight / 2);
                     }
                 }
 
@@ -837,15 +840,19 @@ namespace Pong
                     {
                         aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
                     }
-                    //WHY THE FUCK DOES IT NOT WORK
+                    //WHY THE FUCK DOES IT NOT WORK (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
                     if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
                     {
                         if (gameLevel == 2 || gameLevel == 4)
                         {
-                            aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
-                        } else
+                            Console.WriteLine("aiPaddleCenterBlue: " + aiPaddleCenterBlue);
+                            Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
+                            Console.WriteLine("aiPaddleRectBlue.Y: " + aiPaddleRectBlue.Y);
+                            Console.WriteLine("predictedBallBlueHeight: " + predictedBallBlueHeight);
+                            aiPaddleRectBlue.Y = (int)predictedBallBlueHeight - (aiPaddleRectBlue.Height / 2);
+                        } else if (gameLevel == 1 || gameLevel == 3)
                         {
-                            aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
+                            aiPaddleRectBlue.Y = (int)predictedBallBlueHeight - (kPaddleHeight / 2);
                         }
                     }
                 }
