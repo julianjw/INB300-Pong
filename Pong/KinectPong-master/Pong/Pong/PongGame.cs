@@ -810,7 +810,7 @@ namespace Pong
                 //AI Red Paddle
                 int aiPaddleCenterRed = aiPaddleRectRed.Center.Y;
 
-                if (predictedBallRedHeight > 0 && predictedBallRedHeight != aiPaddleCenterRed)
+                if (predictedBallRedHeight > 0 && ballCenterRed != aiPaddleCenterRed)
                 {
                     if (ballCenterRed < aiPaddleCenterRed)
                     {
@@ -823,14 +823,14 @@ namespace Pong
 
                     if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
                     {
-                        aiPaddleRectRed.Y = (int)predictedBallRedHeight - (kPaddleHeight / 2);
+                        aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
                     }
                 }
 
                 //AI Blue Paddle
                 int aiPaddleCenterBlue = aiPaddleRectBlue.Center.Y;
 
-                if (predictedBallBlueHeight > 0 && predictedBallBlueHeight != aiPaddleCenterBlue)
+                if (predictedBallBlueHeight > 0 && ballCenterBlue != aiPaddleCenterBlue)
                 {
                     if (ballCenterBlue < aiPaddleCenterBlue)
                     {
@@ -849,10 +849,10 @@ namespace Pong
                             Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
                             Console.WriteLine("aiPaddleRectBlue.Y: " + aiPaddleRectBlue.Y);
                             Console.WriteLine("predictedBallBlueHeight: " + predictedBallBlueHeight);
-                            aiPaddleRectBlue.Y = (int)predictedBallBlueHeight - (aiPaddleRectBlue.Height / 2);
+                            aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
                         } else if (gameLevel == 1 || gameLevel == 3)
                         {
-                            aiPaddleRectBlue.Y = (int)predictedBallBlueHeight - (kPaddleHeight / 2);
+                            aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
                         }
                     }
                 }
