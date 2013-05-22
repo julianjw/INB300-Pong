@@ -812,18 +812,25 @@ namespace Pong
 
                 if (predictedBallRedHeight > 0 && ballCenterRed != aiPaddleCenterRed)
                 {
-                    if (ballCenterRed < aiPaddleCenterRed)
+                    if ((aiPaddleRectRed.Y + kPaddleHeight) > kGameHeight)
                     {
-                        aiPaddleRectRed.Y -= kMaxAIPaddleVelocity;
+                        aiPaddleRectRed.Y = kGameHeight - kPaddleHeight;
                     }
-                    else if (ballCenterRed > aiPaddleCenterRed)
+                    else
                     {
-                        aiPaddleRectRed.Y += kMaxAIPaddleVelocity;
-                    }
+                        if (ballCenterRed < aiPaddleCenterRed)
+                        {
+                            aiPaddleRectRed.Y -= kMaxAIPaddleVelocity;
+                        }
+                        else if (ballCenterRed > aiPaddleCenterRed)
+                        {
+                            aiPaddleRectRed.Y += kMaxAIPaddleVelocity;
+                        }
 
-                    if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
-                    {
-                        aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
+                        if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
+                        {
+                            aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
+                        }
                     }
                 }
 
@@ -832,27 +839,42 @@ namespace Pong
 
                 if (predictedBallBlueHeight > 0 && ballCenterBlue != aiPaddleCenterBlue)
                 {
-                    if (ballCenterBlue < aiPaddleCenterBlue)
-                    {
-                        aiPaddleRectBlue.Y -= kMaxAIPaddleVelocity;
-                    }
-                    else if (ballCenterBlue > aiPaddleCenterBlue)
-                    {
-                        aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
-                    }
-                    //WHY THE FUCK DOES IT NOT WORK (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
-                    if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
+                    if ((aiPaddleRectBlue.Y + kPaddleHeight) > kGameHeight)
                     {
                         if (gameLevel == 2 || gameLevel == 4)
                         {
-                            Console.WriteLine("aiPaddleCenterBlue: " + aiPaddleCenterBlue);
-                            Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
-                            Console.WriteLine("aiPaddleRectBlue.Y: " + aiPaddleRectBlue.Y);
-                            Console.WriteLine("predictedBallBlueHeight: " + predictedBallBlueHeight);
-                            aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
-                        } else if (gameLevel == 1 || gameLevel == 3)
+                            aiPaddleRectBlue.Y = kGameHeight - (kPaddleHeight / 2);
+                        }
+                        else
                         {
-                            aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
+                            aiPaddleRectBlue.Y = kGameHeight - kPaddleHeight;
+                        }
+                    }
+                    else
+                    {
+                        if (ballCenterBlue < aiPaddleCenterBlue)
+                        {
+                            aiPaddleRectBlue.Y -= kMaxAIPaddleVelocity;
+                        }
+                        else if (ballCenterBlue > aiPaddleCenterBlue)
+                        {
+                            aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
+                        }
+                        //WHY DOES IT NOT WORK? (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
+                        if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
+                        {
+                            if (gameLevel == 2 || gameLevel == 4)
+                            {
+                                Console.WriteLine("aiPaddleCenterBlue: " + aiPaddleCenterBlue);
+                                Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
+                                Console.WriteLine("aiPaddleRectBlue.Y: " + aiPaddleRectBlue.Y);
+                                Console.WriteLine("predictedBallBlueHeight: " + predictedBallBlueHeight);
+                                aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
+                            }
+                            else if (gameLevel == 1 || gameLevel == 3)
+                            {
+                                aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
+                            }
                         }
                     }
                 }
