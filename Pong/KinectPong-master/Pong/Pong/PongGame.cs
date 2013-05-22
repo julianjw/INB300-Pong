@@ -179,8 +179,11 @@ namespace Pong
 
         enum playerMode { singlePlayer, multiPlayer };
 
-        SystemSound bounceSound;
-        SystemSound backgroundSound;
+        SoundEffect bounceSound;
+        SoundEffect backgroundSound;
+        SoundEffectInstance backgroundSoundInstance;
+        SoundEffect gameoverSound;
+        SoundEffectInstance gameoverSoundInstance;
 
         /// <summary>
         /// Active Kinect sensor
@@ -200,8 +203,18 @@ namespace Pong
 		{
             if (gameLevel == 0)
             {
-                (new SoundPlayer(@"Pong\PongContent\BackgroundMusic1.wav")).Play();
-                //(new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\BackgroundMusic1.wav")).Play();
+                backgroundSound = Content.Load<SoundEffect>("BackgroundMusic1");
+                backgroundSoundInstance = backgroundSound.CreateInstance();
+                if (backgroundSoundInstance.State == SoundState.Stopped)
+                {
+                    backgroundSoundInstance.Volume = 0.75f;
+                    backgroundSoundInstance.IsLooped = true;
+                    backgroundSoundInstance.Play();
+                }
+                else
+                {
+                    backgroundSoundInstance.Resume();
+                }
             }
 
             aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
@@ -231,8 +244,13 @@ namespace Pong
                 if (gameLevel == 4)
                 {
                     gameLevel = 5;
-                    (new SoundPlayer(@"Pong\PongContent\gameover.wav")).Play();
-                    //(new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\PongContent\gameover.wav")).Play();
+                    backgroundSoundInstance.Pause();
+                    gameoverSoundInstance.Play();
+                    while (gameoverSoundInstance.State == SoundState.Playing)
+                    {
+                        continue;
+                    }
+                    backgroundSoundInstance.Resume();
                 }
                 else
                 {
@@ -252,8 +270,13 @@ namespace Pong
                 if (gameLevel == 4)
                 {
                     gameLevel = 5;
-                    (new SoundPlayer(@"Pong\PongContent\gameover.wav")).Play();
-                    //(new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\PongContent\gameover.wav")).Play();
+                    backgroundSoundInstance.Pause();
+                    gameoverSoundInstance.Play();
+                    while (gameoverSoundInstance.State == SoundState.Playing)
+                    {
+                        continue;
+                    }
+                    backgroundSoundInstance.Resume();
                 }
                 else
                 {
@@ -335,8 +358,6 @@ namespace Pong
 			
 			base.Initialize();
 		}
-
-
 
         private void SensorSkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
@@ -429,8 +450,10 @@ namespace Pong
 			dotTexture = Content.Load<Texture2D>("Dot");
 			ballTexture = Content.Load<Texture2D>("Ball");
 
-            bounceSound = Content.Load<SystemSound>("bounce");
-            backgroundSound = Content.Load<SystemSound>("BackgroundMusic1");
+            bounceSound = Content.Load<SoundEffect>("bounce");
+            gameoverSound = Content.Load<SoundEffect>("gameover");
+            gameoverSoundInstance = gameoverSound.CreateInstance();
+            gameoverSoundInstance.IsLooped = false;
 		}
 		
 		protected override void UnloadContent()
@@ -458,8 +481,16 @@ namespace Pong
 				done = (resultRed == BallCollision.RightMiss || resultRed == BallCollision.RightPaddle || resultBlue == BallCollision.RightMiss || resultBlue == BallCollision.LeftMiss);
 			}
 
-            predictedBallRedHeight = currentBallRectRed.Y + new Random(time.Millisecond).Next(-15, 15);
-            predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-15, 15);
+            predictedBallRedHeight = currentBallRectRed.Y + new Random(time.Millisecond).Next(-20, 20);
+
+            if (gameLevel != 2 && gameLevel != 4)
+            {
+                predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-20, 20);
+            }
+            else
+            {
+                predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-10, 10);
+            }
 		}
 		
 		enum BallCollision
@@ -482,12 +513,12 @@ namespace Pong
 			if (enclosingRectRed.Y >= GraphicsDevice.Viewport.Height - kBallHeight)
 			{
 				velocityRed.Y *= -1;
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
+                bounceSound.Play();
 			}
 			else if (enclosingRectRed.Y <= 0)
 			{
 				velocityRed.Y *= -1;
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
+                bounceSound.Play();
 			}
 			
 			if (aiPaddleRectRed.Intersects(enclosingRectRed))
@@ -510,7 +541,7 @@ namespace Pong
                         }
                     }
                 }
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
+                bounceSound.Play();
                 collision = BallCollision.RightPaddle;
 			}
 			else if (player1PaddleRectLeft.Intersects(enclosingRectRed))
@@ -533,7 +564,7 @@ namespace Pong
                         }
                     }
                 }
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
+                bounceSound.Play();
 				collision = BallCollision.LeftPaddle;
 			}
 			else if (enclosingRectRed.X >= GraphicsDevice.Viewport.Width - kBallWidth)
@@ -559,12 +590,12 @@ namespace Pong
             if (enclosingRectBlue.Y >= GraphicsDevice.Viewport.Height - kBallHeight)
             {
                 velocityBlue.Y *= -1;
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
+                bounceSound.Play();
             }
             else if (enclosingRectBlue.Y <= 0)
             {
                 velocityBlue.Y *= -1;
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
+                bounceSound.Play();
             }
 
             if (aiPaddleRectBlue.Intersects(enclosingRectBlue))
@@ -587,7 +618,7 @@ namespace Pong
                         }
                     }
                 }
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
+                bounceSound.Play();
                 collision = BallCollision.RightPaddle;
             }
             else if (player1PaddleRectRight.Intersects(enclosingRectBlue))
@@ -610,7 +641,7 @@ namespace Pong
                         }
                     }
                 }
-                (new SoundPlayer(@"C:\Users\LAB_USER\Documents\GitHub\INB300-Pong\Pong\KinectPong-master\Pong\Pong\bounce.wav")).Play();
+                bounceSound.Play();
                 collision = BallCollision.LeftPaddle;
             }
             else if (enclosingRectBlue.X >= GraphicsDevice.Viewport.Width - kBallWidth)
@@ -627,9 +658,6 @@ namespace Pong
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
-
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
                 this.Exit();
 
@@ -700,8 +728,8 @@ namespace Pong
                     gameText = "";
                     timer.Stop();
                 }
-            }
-            else if (gameLevel > 0 && gameLevel < 5)
+            } 
+            else if (gameLevel > 0 && gameLevel <= 4)
             {
 
                 if (currentGameLevel == 6)
@@ -773,8 +801,9 @@ namespace Pong
 
                 int ballCenterRed = (int)predictedBallRedHeight + (kBallHeight / 2);
                 int ballCenterBlue = (int)predictedBallBlueHeight + (kBallHeight / 2);
+
+                //AI Red Paddle
                 int aiPaddleCenterRed = aiPaddleRectRed.Center.Y;
-                int aiPaddleCenterBlue = aiPaddleRectBlue.Center.Y;
 
                 if (predictedBallRedHeight > 0 && ballCenterRed != aiPaddleCenterRed)
                 {
@@ -793,6 +822,9 @@ namespace Pong
                     }
                 }
 
+                //AI Blue Paddle
+                int aiPaddleCenterBlue = aiPaddleRectBlue.Center.Y;
+
                 if (predictedBallBlueHeight > 0 && ballCenterBlue != aiPaddleCenterBlue)
                 {
                     if (ballCenterBlue < aiPaddleCenterBlue)
@@ -806,11 +838,14 @@ namespace Pong
 
                     if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
                     {
-                        aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
+                        if (gameLevel == 2 || gameLevel == 4)
+                        {
+                            aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
+                        } else {
+                            aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
+                        }
                     }
                 }
-
-
             }
 
             base.Update(gameTime);
@@ -825,6 +860,10 @@ namespace Pong
             if (gameLevel == 0)
             {
                 drawTitleScreen();
+            }
+            else if (gameLevel == 5)
+            {
+                drawEndScreen();
             }
             else if (gameLevel == 6)
             {
@@ -881,10 +920,6 @@ namespace Pong
 
                 drawScore();
 
-            }
-            else
-            {
-                drawEndScreen();
             }
 
 			spriteBatch.End();
@@ -954,6 +989,11 @@ namespace Pong
             spriteBatch.DrawString(titleFont, (level), levelPosition, Color.Black);
             spriteBatch.DrawString(gameFont, (message), msgPosition, Color.Black);
             spriteBatch.DrawString(gameFont, (countdown), timePosition, Color.Black);
+
+            if (currentGameLevel + 1 == 6)
+            {
+                level = "WRONG";
+            }
         }
 
         private void drawScore()
