@@ -557,13 +557,16 @@ namespace Pong
                 if (enclosingRectRed.Right > aiPaddleRectRed.X && (enclosingRectRed.Bottom > aiPaddleRectRed.Y && enclosingRectRed.Y < aiPaddleRectRed.Bottom))
                 {
 
-                    if (enclosingRectRed.Center.X > aiPaddleRectRed.X && enclosingRectRed.Center.X < aiPaddleRectRed.Right)
+                    if (enclosingRectRed.Bottom >= aiPaddleRectRed.Top && enclosingRectRed.Right > aiPaddleRectRed.Center.X)
                     {
-                        if (enclosingRectRed.Bottom > aiPaddleRectRed.Y || enclosingRectRed.Top < aiPaddleRectRed.Bottom)
-                        {
-                            velocityRed.Y *= -1;
-                        }
-                        
+
+                        velocityRed.Y *= -1;
+                        enclosingRectRed.Y -= 2;
+                    }
+                    else if (enclosingRectRed.Top <= aiPaddleRectRed.Bottom && enclosingRectRed.Right > aiPaddleRectRed.Center.X)
+                    {
+                        velocityRed.Y *= -1;
+                        enclosingRectRed.Y += 2;
                     }
                     else
                     {
@@ -591,14 +594,16 @@ namespace Pong
                 if (enclosingRectRed.Left < player1PaddleRectLeft.Right && (enclosingRectRed.Bottom > player1PaddleRectLeft.Y && enclosingRectRed.Y < player1PaddleRectLeft.Bottom))
                 {
 
-                //if (enclosingRectRed.Center.X >= player1PaddleRectLeft.X && enclosingRectRed.Center.X <= (player1PaddleRectLeft.X + player1PaddleRectLeft.Width))
-                //{
-                    if (enclosingRectRed.Center.X > player1PaddleRectLeft.X && enclosingRectRed.Center.X < player1PaddleRectLeft.Right)
+                    if (enclosingRectRed.Bottom >= player1PaddleRectLeft.Top && enclosingRectRed.Left > player1PaddleRectLeft.Center.X)
                     {
-                        if (enclosingRectRed.Bottom > player1PaddleRectLeft.Y || enclosingRectRed.Top < player1PaddleRectLeft.Bottom)
-                        {
-                            velocityRed.Y *= -1;
-                        }
+
+                        velocityRed.Y *= -1;
+                        enclosingRectRed.Y -= 2;
+                    }
+                    else if (enclosingRectRed.Top <= player1PaddleRectLeft.Bottom && enclosingRectRed.Left > player1PaddleRectLeft.Center.X)
+                    {
+                        velocityRed.Y *= -1;
+                        enclosingRectRed.Y += 2;
                     }
                     else
                     {
@@ -657,13 +662,16 @@ namespace Pong
                 if (enclosingRectBlue.Right > aiPaddleRectBlue.X && (enclosingRectBlue.Bottom > aiPaddleRectBlue.Y && enclosingRectBlue.Y < aiPaddleRectBlue.Bottom))
                 {
 
-                    if (enclosingRectBlue.Center.X > aiPaddleRectBlue.X && enclosingRectBlue.Center.X < aiPaddleRectBlue.Right)
+                    if (enclosingRectBlue.Bottom >= aiPaddleRectBlue.Top && enclosingRectBlue.Right > aiPaddleRectBlue.Center.X)
                     {
-                        if (enclosingRectBlue.Bottom > aiPaddleRectBlue.Y || enclosingRectBlue.Top < aiPaddleRectBlue.Bottom)
-                        {
-                            velocityBlue.Y *= -1;
-                        }
 
+                        velocityBlue.Y *= -1;
+                        enclosingRectBlue.Y -= 2;
+                    }
+                    else if (enclosingRectBlue.Top <= aiPaddleRectBlue.Bottom && enclosingRectBlue.Right > aiPaddleRectBlue.Center.X)
+                    {
+                        velocityBlue.Y *= -1;
+                        enclosingRectBlue.Y += 2;
                     }
                     else
                     {
@@ -675,11 +683,12 @@ namespace Pong
                     {
                         velocityBlue.X = -0.5f;
                     }
+
                 }
-                //else
-                //{
-                //    velocityBlue.X *= -1;
-                //}
+                else
+                {
+                    velocityBlue.X *= -1;
+                }
                 bounceSound.Play();
                 collision = BallCollision.RightPaddle;
             }
@@ -691,14 +700,16 @@ namespace Pong
                 if (enclosingRectBlue.Left < player1PaddleRectRight.Right && (enclosingRectBlue.Bottom > player1PaddleRectRight.Y && enclosingRectBlue.Y < player1PaddleRectRight.Bottom))
                 {
 
-                    //if (enclosingRectBlue.Center.X >= player1PaddleRectRight.X && enclosingRectBlue.Center.X <= (player1PaddleRectRight.X + player1PaddleRectRight.Width))
-                    //{
-                    if (enclosingRectBlue.Center.X > player1PaddleRectRight.X && enclosingRectBlue.Center.X < player1PaddleRectRight.Right)
+                    if (enclosingRectBlue.Bottom >= player1PaddleRectRight.Top && enclosingRectBlue.Left > player1PaddleRectRight.Center.X)
                     {
-                        if (enclosingRectBlue.Bottom > player1PaddleRectRight.Y || enclosingRectBlue.Top < player1PaddleRectRight.Bottom)
-                        {
-                            velocityBlue.Y *= -1;
-                        }
+
+                        velocityBlue.Y *= -1;
+                        enclosingRectBlue.Y -= 2;
+                    }
+                    else if (enclosingRectBlue.Top <= player1PaddleRectRight.Bottom && enclosingRectBlue.Left > player1PaddleRectRight.Center.X)
+                    {
+                        velocityBlue.Y *= -1;
+                        enclosingRectBlue.Y += 2;
                     }
                     else
                     {
@@ -708,13 +719,13 @@ namespace Pong
 
                     if (velocityBlue.X == 0)
                     {
-                        velocityBlue.X = 0.5f;
+                        velocityBlue.X = -0.5f;
                     }
                 }
-                //else
-                //{
-                //    velocityBlue.X *= -1;
-                //}
+                else
+                {
+                    velocityBlue.X *= -1;
+                }
                 bounceSound.Play();
                 collision = BallCollision.LeftPaddle;
             }
