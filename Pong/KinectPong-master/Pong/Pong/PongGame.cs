@@ -425,7 +425,8 @@ namespace Pong
                                 Joint jointHead = skel.Joints[JointType.Head];
                                 if (jointLeft.Position.Y >= jointHead.Position.Y)
                                 {
-                                    gameLevel++;
+                                    gameLevel = 1;
+                                    gameState = state.TRANS;
                                     RestartGame();
                                 }
                                 break;
