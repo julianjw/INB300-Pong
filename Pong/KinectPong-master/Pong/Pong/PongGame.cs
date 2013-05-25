@@ -159,6 +159,7 @@ namespace Pong
 
         SpriteFont gameFont;
         SpriteFont titleFont;
+        SpriteFont instructionsFont;
 
         float handPos;
         int ballRedVelocityX;
@@ -472,6 +473,7 @@ namespace Pong
 
             gameFont = Content.Load<SpriteFont>("Scoreboard");
             titleFont = Content.Load<SpriteFont>("Title");
+            instructionsFont = Content.Load<SpriteFont>("Instructions");
 
 			dotTexture = Content.Load<Texture2D>("Dot");
 			ballTexture = Content.Load<Texture2D>("Ball");
@@ -1027,19 +1029,23 @@ namespace Pong
 
         private void drawTitleScreen()
         {
-            string tagline = "Let's Pong it up!";
+            string tagline = "Yo dawg I heard you like PONG!";
+            string instructions = "Raise your left hand to start game";
 
             // Text sizes according to font package
             Vector2 titleTxtSize = titleFont.MeasureString(gameTitle);
-            Vector2 tagTxtPos = gameFont.MeasureString(tagline);
+            Vector2 tagTxtSize = gameFont.MeasureString(tagline);
+            Vector2 insTxtSize = instructionsFont.MeasureString(instructions);
 
             // Text positions according to sizes
             Vector2 titleTxtPos = new Vector2(hMidPoint - (titleTxtSize.X / 2), vMidPoint - titleTxtSize.Y);
-            Vector2 taglinePosition = new Vector2(hMidPoint - (tagTxtPos.X / 2), vMidPoint);
+            Vector2 tagTxtPos = new Vector2(hMidPoint - (tagTxtSize.X / 2), vMidPoint);
+            Vector2 insTxtPos = new Vector2(hMidPoint - (insTxtSize.X / 2), kGameHeight - insTxtSize.Y);
 
             // Draw text
             spriteBatch.DrawString(titleFont, (gameTitle), titleTxtPos, Color.White);
-            spriteBatch.DrawString(gameFont, (tagline), taglinePosition, Color.White);
+            spriteBatch.DrawString(gameFont, (tagline), tagTxtPos, Color.White);
+            spriteBatch.DrawString(instructionsFont, (instructions), insTxtPos, Color.White);
         }
 
         private void drawEndScreen()
@@ -1075,21 +1081,25 @@ namespace Pong
             string level = "Level: " + (currentGameLevel + 1);
             string message = "Get READY!";
             string countdown = timer.GetSeconds().ToString();
+            string score = player1GameScore + "           SCORE           " + player2GameScore;
 
             // Text sizes according to font package
             Vector2 lvlTxtSize = titleFont.MeasureString(level);
             Vector2 msgTxtSize = gameFont.MeasureString(message);
             Vector2 timeTxtSize = gameFont.MeasureString(countdown);
+            Vector2 scrTxtSize = gameFont.MeasureString(score);
 
             // Text positions according to sizes
             Vector2 lvlTxtPos = new Vector2(hMidPoint - (lvlTxtSize.X / 2), vMidPoint - lvlTxtSize.Y);
             Vector2 msgTxtPos = new Vector2(hMidPoint - (msgTxtSize.X / 2), vMidPoint);
             Vector2 timeTxtPos = new Vector2(hMidPoint - (timeTxtSize.X / 2), vMidPoint + msgTxtSize.Y);
+            Vector2 scrTxtPos = new Vector2(hMidPoint - (scrTxtSize.X / 2), kGameHeight - (scrTxtSize.Y * 2));
 
             // Draw text
             spriteBatch.DrawString(titleFont, (level), lvlTxtPos, Color.White);
             spriteBatch.DrawString(gameFont, (message), msgTxtPos, Color.White);
             spriteBatch.DrawString(gameFont, (countdown), timeTxtPos, Color.White);
+            spriteBatch.DrawString(gameFont, (score), scrTxtPos, Color.White);
 
             // TODO remove debug lines below:
             if (currentGameLevel + 1 == 7)
