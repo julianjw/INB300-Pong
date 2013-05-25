@@ -252,6 +252,7 @@ namespace Pong
                 {
                     //gameLevel = 7;
                     gameState = state.TRANS;
+                    gameLevel++;
                     timer = new CountdownTimer(5);
                 }
                 player1GameScore++;
@@ -281,6 +282,7 @@ namespace Pong
                 {
                     //gameLevel = 7;
                     gameState = state.TRANS;
+                    gameLevel++;
                     timer = new CountdownTimer(5);
                 }
                 player2GameScore++;
@@ -765,7 +767,7 @@ namespace Pong
                 if (timer.GetSeconds() == 0)
                 {
                     //gameLevel = currentGameLevel + 1;
-                    gameLevel++;
+                    //gameLevel++;
                     //currentGameLevel = 7;
                     gameState = state.PLAY;
                     resetScore();
@@ -1216,7 +1218,7 @@ namespace Pong
         private void drawTransitionScreen()
         {
 
-            string level = "Level: " + (gameLevel + 1);
+            string level = "Level: " + gameLevel;
             string message = "Get READY!";
             string countdown = timer.GetSeconds().ToString();
             string score = player1GameScore + "           SCORE           " + player2GameScore;
