@@ -653,6 +653,7 @@ namespace Pong
             {
                 float oldVelocityX = velocityBlue.X;
                 //Make sure the ball doesn't get stuck within the player's paddle
+
                 if (enclosingRectBlue.Right > aiPaddleRectBlue.X && (enclosingRectBlue.Bottom > aiPaddleRectBlue.Y && enclosingRectBlue.Y < aiPaddleRectBlue.Bottom))
                 {
 
@@ -675,10 +676,10 @@ namespace Pong
                         velocityBlue.X = -0.5f;
                     }
                 }
-                else
-                {
-                    velocityBlue.X *= -1;
-                }
+                //else
+                //{
+                //    velocityBlue.X *= -1;
+                //}
                 bounceSound.Play();
                 collision = BallCollision.RightPaddle;
             }
@@ -710,10 +711,10 @@ namespace Pong
                         velocityBlue.X = 0.5f;
                     }
                 }
-                else
-                {
-                    velocityBlue.X *= -1;
-                }
+                //else
+                //{
+                //    velocityBlue.X *= -1;
+                //}
                 bounceSound.Play();
                 collision = BallCollision.LeftPaddle;
             }
