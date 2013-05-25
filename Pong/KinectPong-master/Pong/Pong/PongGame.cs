@@ -1055,9 +1055,11 @@ namespace Pong
         {
             string level = "Level: " + gameLevel;
             string score = player1Score + " | " + player2Score;
+            Vector2 lvlTxtSize = gameFont.MeasureString(level);
+            Vector2 scrTxtSize = gameFont.MeasureString(score);
 
-            Vector2 levelPosition = new Vector2(hMidPoint - (gameFont.MeasureString(level).X / 2), 10);
-            Vector2 scorePosition = new Vector2(hMidPoint - (gameFont.MeasureString(score).X / 2), 30);
+            Vector2 levelPosition = new Vector2(hMidPoint - (lvlTxtSize.X / 2), 10);
+            Vector2 scorePosition = new Vector2(hMidPoint - (scrTxtSize.X / 2), (lvlTxtSize.Y + 20));
 
             spriteBatch.DrawString(gameFont, (level), levelPosition, Color.White);
             spriteBatch.DrawString(gameFont, (score), scorePosition, Color.White);
