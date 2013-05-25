@@ -236,11 +236,17 @@ namespace Pong
 
             }
 
-            if (gameLevel == 3 || gameLevel == 5)
+            if (gameLevel == 3)
             {
                 player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight / 2);
 
                 aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
+            }
+            if (gameLevel == 5)
+            {
+                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
+
+                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
             }
 
             ballRedRect = new Rectangle(500, 600, kBallWidth, kBallHeight);
@@ -399,28 +405,29 @@ namespace Pong
                         int handRightY = 0;
                         int handLeftY = 0;
 
-                        handPos = jointRight.Position.Y; //for testing purposes, can be deleted for release version   
+                        handPos = jointLeft.Position.Y; //for testing purposes, can be deleted for release version   
 
                         switch (gameLevel)
                         {
                             case 0: 
                                 Joint jointHead = skel.Joints[JointType.Head];
-                                if (jointRight.Position.Y >= jointHead.Position.Y)
+                                if (jointLeft.Position.Y >= jointHead.Position.Y)
                                 {
                                     gameLevel++;
+                                    RestartGame();
                                 }
                                 break;
                             //gamelevel 1 = one extremely big
                             case 1:
-                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - (kPaddleHeight*2), 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 break;
                             //gamelevel 2 = one big
                             case 2:
-                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 break;
                             //gamelevel 3 = one small
                             case 3:
-                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 1.0f, 1.0f, ScalingType.paddleSmall).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kSmallPaddleHeight, 0.75f, 0.75f, ScalingType.paddleSmall).Position.Y;
                                 break;
                             //gamelevel 4 = two big
                             case 4:
@@ -429,10 +436,10 @@ namespace Pong
                                 break;
                             //gamelvel 5 = one big, one small
                             case 5:
-                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
-                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 1.0f, 1.0f, ScalingType.paddleSmall).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kSmallPaddleHeight, 0.75f, 0.75f, ScalingType.paddleSmall).Position.Y;
                                 break;
-                            default: break;
+                            //default: break;
                         }
 
                         //if multiplayer blah blah blah
@@ -501,15 +508,15 @@ namespace Pong
                         resultBlue == BallCollision.LeftPaddle);
 			}
 
-            predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-20, 20);
+            predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-120, 120);
 
             if (gameLevel != 1 && gameLevel != 3 && gameLevel != 5)
             {
-                predictedBallRedHeight = currentBallRectRed.Y + new Random(time.Millisecond).Next(-20, 20);
+                predictedBallRedHeight = currentBallRectRed.Y + new Random(time.Millisecond).Next(-120, 120);
             }
             else
             {
-                predictedBallRedHeight = currentBallRectRed.Y;
+                predictedBallRedHeight = currentBallRectRed.Y + new Random(time.Millisecond).Next(-60, 60);
             }
 		}
 		
@@ -544,22 +551,20 @@ namespace Pong
 			if (aiPaddleRectRed.Intersects(enclosingRectRed))
 			{
                 float oldVelocityX = velocityRed.X;
-				velocityRed.X *= -1;
-				//Make sure the ball doesn't get stuck within the AI's paddle
-                if ((enclosingRectRed.X + enclosingRectRed.Width / 2) != kGameWidth / 2)
+                //Make sure the ball doesn't get stuck within the player's paddle
+                if (enclosingRectRed.X >= player1PaddleRectLeft.X && enclosingRectRed.X <= (player1PaddleRectLeft.X + player1PaddleRectLeft.Width))
                 {
-                    if ((velocityRed.X * -1) == oldVelocityX)
+                    velocityRed.X *= -1;
+                    enclosingRectRed.X = aiPaddleRectRed.X;
+
+                    if (velocityRed.X == 0)
                     {
-                        enclosingRectRed.X -= 20;
-                        if (velocityRed.X > 0)
-                        {
-                            velocityRed.X = velocityRed.X * -1;
-                        }
-                        else if (velocityRed.X == 0)
-                        {
-                            velocityRed.X = -0.5f;
-                        }
+                        velocityRed.X = -0.5f;
                     }
+                }
+                else
+                {
+                    velocityRed.X *= -1;
                 }
                 bounceSound.Play();
                 collision = BallCollision.RightPaddle;
@@ -567,22 +572,20 @@ namespace Pong
 			else if (player1PaddleRectLeft.Intersects(enclosingRectRed))
 			{
                 float oldVelocityX = velocityRed.X;
-                velocityRed.X *= -1;
                 //Make sure the ball doesn't get stuck within the player's paddle
-                if ((enclosingRectRed.X + enclosingRectRed.Width / 2) != kGameWidth / 2)
+                if (enclosingRectRed.X >= player1PaddleRectLeft.X && enclosingRectRed.X <= (player1PaddleRectLeft.X + player1PaddleRectLeft.Width))
                 {
-                    if ((velocityRed.X * -1) == oldVelocityX)
+                    velocityRed.X *= -1;
+                    enclosingRectRed.X = player1PaddleRectLeft.X + player1PaddleRectLeft.Width;
+
+                    if (velocityRed.X == 0)
                     {
-                        enclosingRectRed.X += 20;
-                        if (velocityRed.X < 0)
-                        {
-                            velocityRed.X = velocityRed.X * -1;
-                        }
-                        else if (velocityRed.X == 0)
-                        {
-                            velocityRed.X = 0.5f;
-                        }
+                        velocityRed.X = 0.5f;
                     }
+                }
+                else
+                {
+                    velocityRed.X *= -1;
                 }
                 bounceSound.Play();
 				collision = BallCollision.LeftPaddle;
@@ -621,22 +624,20 @@ namespace Pong
             if (aiPaddleRectBlue.Intersects(enclosingRectBlue))
             {
                 float oldVelocityX = velocityBlue.X;
-                velocityBlue.X *= -1;
-                //Checking to make sure the ball doesn't get stuck within the AI's paddle
-                if ((enclosingRectBlue.X + enclosingRectBlue.Width / 2) != kGameWidth / 2)
+                //Make sure the ball doesn't get stuck within the player's paddle
+                if (enclosingRectBlue.X >= aiPaddleRectBlue.X && enclosingRectBlue.X <= (aiPaddleRectBlue.X + aiPaddleRectBlue.Width))
                 {
-                    if ((velocityBlue.X * -1) == oldVelocityX)
+                    velocityBlue.X *= -1;
+                    enclosingRectBlue.X = aiPaddleRectBlue.X;
+
+                    if (velocityBlue.X == 0)
                     {
-                        enclosingRectBlue.X -= 20;
-                        if (velocityBlue.X > 0)
-                        {
-                            velocityBlue.X = velocityBlue.X * -1;
-                        }
-                        else if (velocityBlue.X == 0)
-                        {
-                            velocityBlue.X = -0.5f;
-                        }
+                        velocityBlue.X = -0.5f;
                     }
+                }
+                else
+                {
+                    velocityBlue.X *= -1;
                 }
                 bounceSound.Play();
                 collision = BallCollision.RightPaddle;
@@ -644,22 +645,20 @@ namespace Pong
             else if (player1PaddleRectRight.Intersects(enclosingRectBlue))
             {
                 float oldVelocityX = velocityBlue.X;
-                velocityBlue.X *= -1;
-                //Checking to make sure the ball doesn't get stuck within the player's paddle
-                if ((enclosingRectBlue.X + enclosingRectBlue.Width / 2)  != kGameWidth / 2)
+                //Make sure the ball doesn't get stuck within the player's paddle
+                if (enclosingRectBlue.X >= aiPaddleRectBlue.X && enclosingRectBlue.X <= (aiPaddleRectBlue.X + aiPaddleRectBlue.Width))
                 {
-                    if ((velocityBlue.X * -1) == oldVelocityX)
+                    velocityBlue.X *= -1;
+                    enclosingRectBlue.X = aiPaddleRectBlue.X + aiPaddleRectBlue.Width;
+
+                    if (velocityBlue.X == 0)
                     {
-                        enclosingRectBlue.X += 20;
-                        if (velocityBlue.X < 0)
-                        {
-                            velocityBlue.X = velocityBlue.X * -1;
-                        }
-                        else if (velocityBlue.X == 0)
-                        {
-                            velocityBlue.X = 0.5f;
-                        }
+                        velocityBlue.X = 0.5f;
                     }
+                }
+                else
+                {
+                    velocityBlue.X *= -1;
                 }
                 bounceSound.Play();
                 collision = BallCollision.LeftPaddle;
@@ -836,15 +835,15 @@ namespace Pong
 
                 if (predictedBallRedHeight > 0 && ballCenterRed != aiPaddleCenterRed)
                 {
-                    if ((aiPaddleRectRed.Y + kPaddleHeight) > kGameHeight)
+                    if ((aiPaddleRectRed.Y + kPaddleHeight) >= kGameHeight)
                     {
                         if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
                         {
-                            aiPaddleRectRed.Y = kGameHeight - (kPaddleHeight / 2);
+                            aiPaddleRectRed.Y = kGameHeight - (kPaddleHeight / 2) - 1;
                         }
                         else
                         {
-                            aiPaddleRectRed.Y = kGameHeight - kPaddleHeight;
+                            aiPaddleRectRed.Y = kGameHeight - kPaddleHeight - 1;
                         }
                     }
                     else
