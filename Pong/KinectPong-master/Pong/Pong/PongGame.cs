@@ -173,6 +173,9 @@ namespace Pong
         DateTime time = new DateTime();
 
         int gameLevel = 0;
+        enum state { START, TRANS, PLAY, END };
+        state gameState = state.START;
+
         int currentGameLevel = 0;
         int gameMode = 0;
 
@@ -202,7 +205,8 @@ namespace Pong
 		
 		private void RestartGame()
 		{
-            if (gameLevel == 0)
+            //if (gameLevel == 0)
+            if (gameState == state.START)
             {
                 if (backgroundSound == null)
                 {
@@ -212,43 +216,13 @@ namespace Pong
                     backgroundSoundInstance.IsLooped = true;
                     backgroundSoundInstance.Play();
                 }
-                else
+                else if (backgroundSoundInstance.State == SoundState.Paused)
                 {
-                    if (backgroundSoundInstance.State == SoundState.Paused)
-                    {
-                        backgroundSoundInstance.Resume();
-                    }
+                    backgroundSoundInstance.Resume();
                 }
             }
 
-            if (gameLevel == 1)
-            {
-                player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight * 2);
-                aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
-            }
-            else
-            {
-
-                aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
-                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
-
-                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
-                player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
-
-            }
-
-            if (gameLevel == 3)
-            {
-                player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight / 2);
-
-                aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
-            }
-            if (gameLevel == 5)
-            {
-                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
-
-                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
-            }
+            setPaddles();
 
             ballRedRect = new Rectangle(500, 600, kBallWidth, kBallHeight);
             ballBlueRect = new Rectangle(500, 300, kBallWidth, kBallHeight);
@@ -256,14 +230,15 @@ namespace Pong
             if (player1Score >= 3)
             {
                 //set text to player 1 wins
-                gameText = "Player 1 Wins!";
+                //gameText = "Player 1 Wins!";
                 ballRedVelocity = new Vector2(0.0f, 0.0f);
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
                 currentGameLevel = gameLevel;
                 if (gameLevel == 5)
                 {
-                    gameLevel = 6;
+                    //gameLevel = 6;
+                    gameState = state.END;
                     currentGameLevel = 6;
                     backgroundSoundInstance.Pause();
                     gameoverSoundInstance.Play();
@@ -275,7 +250,8 @@ namespace Pong
                 }
                 else
                 {
-                    gameLevel = 7;
+                    //gameLevel = 7;
+                    gameState = state.TRANS;
                     timer = new CountdownTimer(5);
                 }
                 player1GameScore++;
@@ -283,14 +259,15 @@ namespace Pong
             else if (player2Score >= 3)
             {
                 //set text to player 2 wins
-                gameText = "AI Wins!";
+                //gameText = "AI Wins!";
                 ballRedVelocity = new Vector2(0.0f, 0.0f);
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
                 currentGameLevel = gameLevel;
                 if (gameLevel == 5)
                 {
-                    gameLevel = 6;
+                    //gameLevel = 6;
+                    gameState = state.END;
                     currentGameLevel = 6;
                     backgroundSoundInstance.Pause();
                     gameoverSoundInstance.Play();
@@ -302,7 +279,8 @@ namespace Pong
                 }
                 else
                 {
-                    gameLevel = 7;
+                    //gameLevel = 7;
+                    gameState = state.TRANS;
                     timer = new CountdownTimer(5);
                 }
                 player2GameScore++;
@@ -328,6 +306,39 @@ namespace Pong
             }
 
 		}
+
+        private void setPaddles()
+        {
+            switch (gameLevel)
+            {
+                case 1:
+                    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight * 2);
+                    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
+                    aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
+
+                    player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
+                    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
+                    break;
+            }
+
+            if (gameLevel == 3)
+            {
+                player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight / 2);
+                aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
+            }
+
+            if (gameLevel == 5)
+            {
+                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
+                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
+            }
+        }
 
         private Vector2 RandomVelocity()
         {
@@ -743,89 +754,27 @@ namespace Pong
 
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
-                this.Exit();
+            keyboardInputs();
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.N))
-            {
-                player1Score = 0;
-                player2Score = 0;
-                player1GameScore = 0;
-                player2GameScore = 0;
-                gameLevel = 0;
-                gameMode = (int)playerMode.singlePlayer;
-                gameText = "";
-                RestartGame();
-            }
-
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1))
-            {
-                gameLevel = 1;
-                player1Score = 0;
-                player2Score = 0;
-                gameText = "";
-                RestartGame();
-            }
-
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2))
-            {
-                gameLevel = 2;
-                player1Score = 0;
-                player2Score = 0;
-                gameText = "";
-                RestartGame();
-            }
-
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3))
-            {
-                gameLevel = 3;
-                player1Score = 0;
-                player2Score = 0;
-                gameText = "";
-                RestartGame();
-            }
-
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4))
-            {
-                gameLevel = 4;
-                player1Score = 0;
-                player2Score = 0;
-                gameText = "";
-                RestartGame();
-            }
-
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad5))
-            {
-                gameLevel = 5;
-                player1Score = 0;
-                player2Score = 0;
-                gameText = "";
-                RestartGame();
-            }
-
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad6))
-            {
-                gameLevel = 6;
-                gameText = "";
-            }
-
-            if (gameLevel == 7)
+            //if (gameLevel == 7)
+            if (gameState == state.TRANS)
             {
                 timer.Start();
 
                 if (timer.GetSeconds() == 0)
                 {
-                    gameLevel = currentGameLevel + 1;
-                    currentGameLevel = 7;
-                    player1Score = 0;
-                    player2Score = 0;
-                    gameText = "";
+                    //gameLevel = currentGameLevel + 1;
+                    gameLevel++;
+                    //currentGameLevel = 7;
+                    gameState = state.PLAY;
+                    resetScore();
                     timer.Stop();
                 }
-            } 
-            else if (gameLevel > 0 && gameLevel <= 5)
+            }
+            //else if (gameLevel > 0 && gameLevel <= 5)
+            else if (gameState == state.PLAY)
             {
-
+                // TODO remove this IF statement I think
                 if (currentGameLevel == 7)
                 {
                     RestartGame();
@@ -916,10 +865,10 @@ namespace Pong
                         {
                             if (gameLevel == 1 || gameLevel == 3)
                             {
-                                Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
-                                Console.WriteLine("ballCenterRed: " + ballCenterRed);
-                                Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
-                                Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
+                                //Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
+                                //Console.WriteLine("ballCenterRed: " + ballCenterRed);
+                                //Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
+                                //Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
                                 aiPaddleRectRed.Y = ballCenterRed - (kSmallPaddleHeight / 2);
                             }
                             else if (gameLevel == 2 || gameLevel == 4)
@@ -980,10 +929,10 @@ namespace Pong
                         {
                             if (gameLevel == 5)
                             {
-                                Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
-                                Console.WriteLine("ballCenterRed: " + ballCenterRed);
-                                Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
-                                Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
+                                //Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
+                                //Console.WriteLine("ballCenterRed: " + ballCenterRed);
+                                //Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
+                                //Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
                                 aiPaddleRectBlue.Y = ballCenterBlue - (kSmallPaddleHeight / 2);
                             }
                             else
@@ -1039,6 +988,76 @@ namespace Pong
 
             base.Update(gameTime);
         }
+
+        private void keyboardInputs()
+        {
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
+                this.Exit();
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.N))
+            {
+                gameLevel = 0;
+                gameState = state.START;
+                gameMode = (int)playerMode.singlePlayer;
+                resetGameScore();
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1))
+            {
+                gameLevel = 1;
+                gameState = state.PLAY;
+                resetScore();
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2))
+            {
+                gameLevel = 2;
+                gameState = state.PLAY;
+                resetScore();
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3))
+            {
+                gameLevel = 3;
+                gameState = state.PLAY;
+                resetScore();
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4))
+            {
+                gameLevel = 4;
+                gameState = state.PLAY;
+                resetScore();
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad5))
+            {
+                gameLevel = 5;
+                gameState = state.PLAY;
+                resetScore();
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad6))
+            {
+                gameLevel = 6;
+                gameState = state.PLAY;
+                resetScore();
+            }
+        }
+
+        private void resetScore()
+        {
+            player1Score = 0;
+            player2Score = 0;
+            RestartGame();
+        }
+
+        private void resetGameScore()
+        {
+            player1GameScore = 0;
+            player2GameScore = 0;
+            resetScore();
+        }
 		
 		protected override void Draw(GameTime gameTime)
 		{
@@ -1046,34 +1065,28 @@ namespace Pong
 
             spriteBatch.Begin();
 
-            switch (gameLevel)
+            switch (gameState)
             {
-                case 0:
+                case state.START:
                     drawTitleScreen();
                     break;
-                case 6:
+                case state.END:
                     drawEndScreen();
                     break;
-                case 7:
+                case state.TRANS:
                     drawTransitionScreen();
                     drawPaddles();
                     break;
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
+                case state.PLAY:
                     drawBalls();
                     drawPaddles();
                     drawScore();
                     break;
-
             }
 
 			spriteBatch.End();
 			
 			base.Draw(gameTime);
-
 		}
 
         private void drawBalls()
@@ -1202,7 +1215,7 @@ namespace Pong
         private void drawTransitionScreen()
         {
 
-            string level = "Level: " + (currentGameLevel + 1);
+            string level = "Level: " + (gameLevel + 1);
             string message = "Get READY!";
             string countdown = timer.GetSeconds().ToString();
             string score = player1GameScore + "           SCORE           " + player2GameScore;
