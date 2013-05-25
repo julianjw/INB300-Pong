@@ -908,7 +908,7 @@ namespace Pong
 		
 		protected override void Draw(GameTime gameTime)
 		{
-            GraphicsDevice.Clear(Color.White);
+            GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin();
 
@@ -991,8 +991,8 @@ namespace Pong
             Vector2 titlePostion = new Vector2(hMidPoint - (titleFont.MeasureString(title).X / 2), vMidPoint - 50);
             Vector2 taglinePosition = new Vector2(hMidPoint - (gameFont.MeasureString(tagline).X / 2), titlePostion.Y + 50);
 
-            spriteBatch.DrawString(titleFont, (title), titlePostion, Color.Black);
-            spriteBatch.DrawString(gameFont, (tagline), taglinePosition, Color.Black);
+            spriteBatch.DrawString(titleFont, (title), titlePostion, Color.White);
+            spriteBatch.DrawString(gameFont, (tagline), taglinePosition, Color.White);
         }
 
         private void drawEndScreen()
@@ -1003,7 +1003,7 @@ namespace Pong
             string endHeader = "PONG 9001";
 
             Vector2 headerPosition = new Vector2(hMidPoint - (titleFont.MeasureString(endHeader).X / 2), vMidPoint - 50);
-            spriteBatch.DrawString(titleFont, (endHeader), headerPosition, Color.Black);
+            spriteBatch.DrawString(titleFont, (endHeader), headerPosition, Color.White);
 
             if (gameMode == (int)playerMode.singlePlayer)
             {
@@ -1026,7 +1026,7 @@ namespace Pong
 
 
             Vector2 taglinePosition = new Vector2(hMidPoint - (gameFont.MeasureString(endMessage).X / 2), headerPosition.Y + 50);
-            spriteBatch.DrawString(gameFont, (endMessage), taglinePosition, Color.Black);
+            spriteBatch.DrawString(gameFont, (endMessage), taglinePosition, Color.White);
 
         }
 
@@ -1041,9 +1041,9 @@ namespace Pong
             Vector2 msgPosition = new Vector2(hMidPoint - (gameFont.MeasureString(message).X / 2), levelPosition.Y + 50);
             Vector2 timePosition = new Vector2(hMidPoint - (gameFont.MeasureString(countdown).X / 2), levelPosition.Y + 70);
 
-            spriteBatch.DrawString(titleFont, (level), levelPosition, Color.Black);
-            spriteBatch.DrawString(gameFont, (message), msgPosition, Color.Black);
-            spriteBatch.DrawString(gameFont, (countdown), timePosition, Color.Black);
+            spriteBatch.DrawString(titleFont, (level), levelPosition, Color.White);
+            spriteBatch.DrawString(gameFont, (message), msgPosition, Color.White);
+            spriteBatch.DrawString(gameFont, (countdown), timePosition, Color.White);
 
             if (currentGameLevel + 1 == 7)
             {
@@ -1059,17 +1059,17 @@ namespace Pong
             Vector2 levelPosition = new Vector2(hMidPoint - (gameFont.MeasureString(level).X / 2), 10);
             Vector2 scorePosition = new Vector2(hMidPoint - (gameFont.MeasureString(score).X / 2), 30);
 
-            spriteBatch.DrawString(gameFont, (level), levelPosition, Color.Black);
-            spriteBatch.DrawString(gameFont, (score), scorePosition, Color.Black);
+            spriteBatch.DrawString(gameFont, (level), levelPosition, Color.White);
+            spriteBatch.DrawString(gameFont, (score), scorePosition, Color.White);
 
             // TODO remove debug output below:
             Vector2 position2 = new Vector2(500.0f, 50.0f);
             Vector2 position3 = new Vector2(500.0f, 350.0f);
             Vector2 position5 = new Vector2(500.0f, 70.0f);
 
-            spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos), position2, Color.Black);
-            spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position5, Color.Black);
-            spriteBatch.DrawString(gameFont, gameText, position3, Color.SteelBlue);
+            spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos), position2, Color.White);
+            spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position5, Color.White);
+            spriteBatch.DrawString(gameFont, gameText, position3, Color.White);
         }
 	}
 }
