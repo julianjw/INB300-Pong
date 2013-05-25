@@ -253,6 +253,7 @@ namespace Pong
                     //gameLevel = 7;
                     gameState = state.TRANS;
                     gameLevel++;
+                    setPaddles();
                     timer = new CountdownTimer(5);
                 }
                 player1GameScore++;
@@ -283,6 +284,7 @@ namespace Pong
                     //gameLevel = 7;
                     gameState = state.TRANS;
                     gameLevel++;
+                    setPaddles();
                     timer = new CountdownTimer(5);
                 }
                 player2GameScore++;
@@ -1139,10 +1141,10 @@ namespace Pong
 
                 if (gameLevel == 4 || gameLevel == 5)
                 {
-                    //Draw the player's paddles
+                    // Draw the player's 2nd paddle
                     spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
 
-                    //Draw the AI's paddles
+                    // Draw the AI's 2nd paddle
                     spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
                 }
             }
