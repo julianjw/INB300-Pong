@@ -118,7 +118,7 @@ namespace Pong
 
 	public class PongGame : Microsoft.Xna.Framework.Game
 	{
-
+        const string gameTitle = "Pong 9001";
         const int kLRMargin = 20, kPaddleWidth = 26, kPaddleHeight = 120, kSmallPaddleHeight = 60;
 		const int kBallWidth = 24, kBallHeight = 24;
 		const int kMaxAIPaddleVelocity = 7;
@@ -985,48 +985,45 @@ namespace Pong
 
         private void drawTitleScreen()
         {
-            string title = "PONG 9001";
-            string tagline = "Let's Pong It Up! Game Level: " + gameLevel;
+            string tagline = "Let's Pong it up!";
 
-            Vector2 titlePostion = new Vector2(hMidPoint - (titleFont.MeasureString(title).X / 2), vMidPoint - 50);
-            Vector2 taglinePosition = new Vector2(hMidPoint - (gameFont.MeasureString(tagline).X / 2), titlePostion.Y + 50);
+            // Text sizes according to font package
+            Vector2 titleTxtSize = titleFont.MeasureString(gameTitle);
+            Vector2 tagTxtPos = gameFont.MeasureString(tagline);
 
-            spriteBatch.DrawString(titleFont, (title), titlePostion, Color.White);
+            // Text positions according to sizes
+            Vector2 titleTxtPos = new Vector2(hMidPoint - (titleTxtSize.X / 2), vMidPoint - titleTxtSize.Y);
+            Vector2 taglinePosition = new Vector2(hMidPoint - (tagTxtPos.X / 2), vMidPoint);
+
+            // Draw text
+            spriteBatch.DrawString(titleFont, (gameTitle), titleTxtPos, Color.White);
             spriteBatch.DrawString(gameFont, (tagline), taglinePosition, Color.White);
         }
 
         private void drawEndScreen()
         {
-            string player2 = "Player 2";
-            string winner = "Player 1";
-            string endMessage = "";
-            string endHeader = "PONG 9001";
+            string player2, winner, endMessage;
 
-            Vector2 headerPosition = new Vector2(hMidPoint - (titleFont.MeasureString(endHeader).X / 2), vMidPoint - 50);
-            spriteBatch.DrawString(titleFont, (endHeader), headerPosition, Color.White);
+            // Title text size according to font package
+            Vector2 titleTxtSize = titleFont.MeasureString(gameTitle);
 
-            if (gameMode == (int)playerMode.singlePlayer)
-            {
-                player2 = "Computer";
-            }
+            // Title text position according to size and draw title
+            Vector2 titleTxtPos = new Vector2(hMidPoint - (titleTxtSize.X / 2), vMidPoint - titleTxtSize.Y);
+            spriteBatch.DrawString(titleFont, (gameTitle), titleTxtPos, Color.White);
 
-            if (player1GameScore < player2GameScore)
-            {
-                winner = player2;
-            }
+            // determine who player 2 is
+            player2 = (gameMode == (int)playerMode.singlePlayer) ? "Computer" : "Player 2";
+            // determine the winner
+            winner = (player1GameScore > player2GameScore) ? "Player 1" : player2;
+            // determine if there's a tie or a winner
+            endMessage = (player1GameScore == player2GameScore) ? endMessage = "Tie!" : endMessage = winner + " Wins!";
 
-            if (player1GameScore == player2GameScore)
-            {
-                endMessage = "Tie!";
-            }
-            else
-            {
-                endMessage = winner + " Wins!";
-            }
+            // Win message size according to font package
+            Vector2 tagTxtSize = gameFont.MeasureString(endMessage);
 
-
-            Vector2 taglinePosition = new Vector2(hMidPoint - (gameFont.MeasureString(endMessage).X / 2), headerPosition.Y + 50);
-            spriteBatch.DrawString(gameFont, (endMessage), taglinePosition, Color.White);
+            // Win message position according to size and draw
+            Vector2 tagTxtPos = new Vector2(hMidPoint - (tagTxtSize.X / 2), vMidPoint);
+            spriteBatch.DrawString(gameFont, (endMessage), tagTxtPos, Color.White);
 
         }
 
@@ -1037,14 +1034,22 @@ namespace Pong
             string message = "Get READY!";
             string countdown = timer.GetSeconds().ToString();
 
-            Vector2 levelPosition = new Vector2(hMidPoint - (titleFont.MeasureString(level).X / 2), vMidPoint - 50);
-            Vector2 msgPosition = new Vector2(hMidPoint - (gameFont.MeasureString(message).X / 2), levelPosition.Y + 50);
-            Vector2 timePosition = new Vector2(hMidPoint - (gameFont.MeasureString(countdown).X / 2), levelPosition.Y + 70);
+            // Text sizes according to font package
+            Vector2 lvlTxtSize = titleFont.MeasureString(level);
+            Vector2 msgTxtSize = gameFont.MeasureString(message);
+            Vector2 timeTxtSize = gameFont.MeasureString(countdown);
 
-            spriteBatch.DrawString(titleFont, (level), levelPosition, Color.White);
-            spriteBatch.DrawString(gameFont, (message), msgPosition, Color.White);
-            spriteBatch.DrawString(gameFont, (countdown), timePosition, Color.White);
+            // Text positions according to sizes
+            Vector2 lvlTxtPos = new Vector2(hMidPoint - (lvlTxtSize.X / 2), vMidPoint - lvlTxtSize.Y);
+            Vector2 msgTxtPos = new Vector2(hMidPoint - (msgTxtSize.X / 2), vMidPoint);
+            Vector2 timeTxtPos = new Vector2(hMidPoint - (timeTxtSize.X / 2), vMidPoint + msgTxtSize.Y);
 
+            // Draw text
+            spriteBatch.DrawString(titleFont, (level), lvlTxtPos, Color.White);
+            spriteBatch.DrawString(gameFont, (message), msgTxtPos, Color.White);
+            spriteBatch.DrawString(gameFont, (countdown), timeTxtPos, Color.White);
+
+            // TODO remove debug lines below:
             if (currentGameLevel + 1 == 7)
             {
                 level = "WRONG";
@@ -1055,23 +1060,27 @@ namespace Pong
         {
             string level = "Level: " + gameLevel;
             string score = player1Score + " | " + player2Score;
+
+            // Text sizes according to font package
             Vector2 lvlTxtSize = gameFont.MeasureString(level);
             Vector2 scrTxtSize = gameFont.MeasureString(score);
 
-            Vector2 levelPosition = new Vector2(hMidPoint - (lvlTxtSize.X / 2), 10);
-            Vector2 scorePosition = new Vector2(hMidPoint - (scrTxtSize.X / 2), (lvlTxtSize.Y + 20));
+            // Text positions according to sizes
+            Vector2 levelTxtPos = new Vector2(hMidPoint - (lvlTxtSize.X / 2), 0);
+            Vector2 scoreTxtPos = new Vector2(hMidPoint - (scrTxtSize.X / 2), (lvlTxtSize.Y));
 
-            spriteBatch.DrawString(gameFont, (level), levelPosition, Color.White);
-            spriteBatch.DrawString(gameFont, (score), scorePosition, Color.White);
+            // Draw text
+            spriteBatch.DrawString(gameFont, (level), levelTxtPos, Color.White);
+            spriteBatch.DrawString(gameFont, (score), scoreTxtPos, Color.White);
 
             // TODO remove debug output below:
-            Vector2 position2 = new Vector2(500.0f, 50.0f);
-            Vector2 position3 = new Vector2(500.0f, 350.0f);
-            Vector2 position5 = new Vector2(500.0f, 70.0f);
+            Vector2 position2 = new Vector2(hMidPoint - 300, kGameHeight - 45);
+            Vector2 position3 = new Vector2(hMidPoint - 150, kGameHeight - 80);
+            //Vector2 position5 = new Vector2(hMidPoint - 100, kGameHeight - 100);
 
             spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos), position2, Color.White);
-            spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position5, Color.White);
-            spriteBatch.DrawString(gameFont, gameText, position3, Color.White);
+            spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position3, Color.White);
+            //spriteBatch.DrawString(gameFont, gameText, position5, Color.White);
         }
 	}
 }
