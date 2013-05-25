@@ -497,7 +497,8 @@ namespace Pong
 			{
 				BallCollision resultRed = AdjustBallRedPositionWithScreenBounds(ref currentBallRectRed, ref currentballRedVelocity);
                 BallCollision resultBlue = AdjustBallBluePositionWithScreenBounds(ref currentBallRectBlue, ref currentballBlueVelocity);
-				done = (resultRed == BallCollision.RightMiss || resultRed == BallCollision.RightMiss || resultBlue == BallCollision.RightMiss || resultBlue == BallCollision.RightPaddle);
+				done = (resultRed == BallCollision.RightMiss || resultBlue == BallCollision.RightMiss || resultBlue == BallCollision.RightPaddle || resultRed == BallCollision.RightPaddle || resultRed == BallCollision.LeftPaddle ||
+                        resultBlue == BallCollision.LeftPaddle);
 			}
 
             predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-20, 20);
@@ -572,8 +573,8 @@ namespace Pong
                 {
                     if ((velocityRed.X * -1) == oldVelocityX)
                     {
-                        enclosingRectRed.X -= 20;
-                        if (velocityRed.X > 0)
+                        enclosingRectRed.X += 20;
+                        if (velocityRed.X < 0)
                         {
                             velocityRed.X = velocityRed.X * -1;
                         }
@@ -837,7 +838,14 @@ namespace Pong
                 {
                     if ((aiPaddleRectRed.Y + kPaddleHeight) > kGameHeight)
                     {
-                        aiPaddleRectRed.Y = kGameHeight - kPaddleHeight;
+                        if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
+                        {
+                            aiPaddleRectRed.Y = kGameHeight - (kPaddleHeight / 2);
+                        }
+                        else
+                        {
+                            aiPaddleRectRed.Y = kGameHeight - kPaddleHeight;
+                        }
                     }
                     else
                     {
@@ -849,10 +857,21 @@ namespace Pong
                         {
                             aiPaddleRectRed.Y += kMaxAIPaddleVelocity;
                         }
-
+                        //WHY DOES IT NOT WORK? (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
                         if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
                         {
-                            aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
+                            if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
+                            {
+                                Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
+                                Console.WriteLine("ballCenterRed: " + ballCenterRed);
+                                Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
+                                Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
+                                aiPaddleRectRed.Y = ballCenterRed - (kSmallPaddleHeight / 2);
+                            }
+                            else if (gameLevel == 2 || gameLevel == 4)
+                            {
+                                aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
+                            }
                         }
                     }
                 }
@@ -884,43 +903,43 @@ namespace Pong
                     }
                 }
 
-                //if (predictedBallBlueHeight > 0 && ballCenterBlue != aiPaddleCenterBlue)
+                //if (predictedBallRedHeight > 0 && ballCenterRed != aiPaddleCenterRed)
                 //{
-                //    if ((aiPaddleRectBlue.Y + kPaddleHeight) > kGameHeight)
+                //    if ((aiPaddleRectRed.Y + kPaddleHeight) > kGameHeight)
                 //    {
                 //        if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
                 //        {
-                //            aiPaddleRectBlue.Y = kGameHeight - (kPaddleHeight / 2);
+                //            aiPaddleRectRed.Y = kGameHeight - (kPaddleHeight / 2);
                 //        }
                 //        else
                 //        {
-                //            aiPaddleRectBlue.Y = kGameHeight - kPaddleHeight;
+                //            aiPaddleRectRed.Y = kGameHeight - kPaddleHeight;
                 //        }
                 //    }
                 //    else
                 //    {
-                //        if (ballCenterBlue < aiPaddleCenterBlue)
+                //        if (ballCenterRed < aiPaddleCenterRed)
                 //        {
-                //            aiPaddleRectBlue.Y -= kMaxAIPaddleVelocity;
+                //            aiPaddleRectRed.Y -= kMaxAIPaddleVelocity;
                 //        }
-                //        else if (ballCenterBlue > aiPaddleCenterBlue)
+                //        else if (ballCenterRed > aiPaddleCenterRed)
                 //        {
-                //            aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
+                //            aiPaddleRectRed.Y += kMaxAIPaddleVelocity;
                 //        }
                 //        //WHY DOES IT NOT WORK? (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
-                //        if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
+                //        if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
                 //        {
                 //            if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
                 //            {
-                //                Console.WriteLine("aiPaddleCenterBlue: " + aiPaddleCenterBlue);
-                //                Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
-                //                Console.WriteLine("aiPaddleRectBlue.Y: " + aiPaddleRectBlue.Y);
-                //                Console.WriteLine("predictedBallBlueHeight: " + predictedBallBlueHeight);
-                //                aiPaddleRectBlue.Y = ballCenterBlue - (kSmallPaddleHeight / 2);
+                //                Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
+                //                Console.WriteLine("ballCenterRed: " + ballCenterRed);
+                //                Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
+                //                Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
+                //                aiPaddleRectRed.Y = ballCenterRed - (kSmallPaddleHeight / 2);
                 //            }
                 //            else if (gameLevel == 2 || gameLevel == 4)
                 //            {
-                //                aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
+                //                aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
                 //            }
                 //        }
                 //    }
