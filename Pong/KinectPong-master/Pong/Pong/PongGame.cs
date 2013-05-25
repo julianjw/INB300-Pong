@@ -222,8 +222,8 @@ namespace Pong
 
             if (gameLevel == 1)
             {
-                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight * 2);
-                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
+                player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight * 2);
+                aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
             }
             else
             {
@@ -238,9 +238,9 @@ namespace Pong
 
             if (gameLevel == 3 || gameLevel == 5)
             {
-                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
+                player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight / 2);
 
-                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
+                aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
             }
 
             ballRedRect = new Rectangle(500, 600, kBallWidth, kBallHeight);
@@ -303,12 +303,12 @@ namespace Pong
             else
             {
                 //randomly create a velocity for the blue ball
-                ballBlueVelocity = RandomVelocity();
+                ballRedVelocity = RandomVelocity();
 
                 if (gameLevel == 4 || gameLevel == 5)
                 {
                     //randomly create a velocity for the red ball
-                    ballRedVelocity = RandomVelocity();
+                    ballBlueVelocity = RandomVelocity();
                 }
 
                 //Update red ball velocity to be displayed (testing only)
@@ -412,15 +412,15 @@ namespace Pong
                                 break;
                             //gamelevel 1 = one extremely big
                             case 1:
-                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 break;
                             //gamelevel 2 = one big
                             case 2:
-                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 break;
                             //gamelevel 3 = one small
                             case 3:
-                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 1.0f, 1.0f, ScalingType.paddleSmall).Position.Y;
+                                handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 1.0f, 1.0f, ScalingType.paddleSmall).Position.Y;
                                 break;
                             //gamelevel 4 = two big
                             case 4:
@@ -497,18 +497,18 @@ namespace Pong
 			{
 				BallCollision resultRed = AdjustBallRedPositionWithScreenBounds(ref currentBallRectRed, ref currentballRedVelocity);
                 BallCollision resultBlue = AdjustBallBluePositionWithScreenBounds(ref currentBallRectBlue, ref currentballBlueVelocity);
-				done = (resultRed == BallCollision.RightMiss || resultRed == BallCollision.RightPaddle || resultBlue == BallCollision.RightMiss || resultBlue == BallCollision.LeftMiss);
+				done = (resultRed == BallCollision.RightMiss || resultRed == BallCollision.RightMiss || resultBlue == BallCollision.RightMiss || resultBlue == BallCollision.RightPaddle);
 			}
 
-            predictedBallRedHeight = currentBallRectRed.Y + new Random(time.Millisecond).Next(-20, 20);
+            predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-20, 20);
 
-            if (gameLevel != 3 && gameLevel != 5)
+            if (gameLevel != 1 && gameLevel != 3 && gameLevel != 5)
             {
-                predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-20, 20);
+                predictedBallRedHeight = currentBallRectRed.Y + new Random(time.Millisecond).Next(-20, 20);
             }
             else
             {
-                predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-10, 10);
+                predictedBallRedHeight = currentBallRectRed.Y;
             }
 		}
 		
@@ -824,7 +824,7 @@ namespace Pong
                 if (passedCenter == false && ballBlueVelocity.X > 0 && (ballBlueRect.X + kBallWidth >= GraphicsDevice.Viewport.Bounds.Center.X))
                 {
                     SimulateRestOfTurn();
-                    passedCenter = true;
+                    passedCenter = true; //breakpoint please
                 }
 
                 int ballCenterRed = (int)predictedBallRedHeight + (kBallHeight / 2);
@@ -864,14 +864,7 @@ namespace Pong
                 {
                     if ((aiPaddleRectBlue.Y + kPaddleHeight) > kGameHeight)
                     {
-                        if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
-                        {
-                            aiPaddleRectBlue.Y = kGameHeight - (kPaddleHeight / 2);
-                        }
-                        else
-                        {
-                            aiPaddleRectBlue.Y = kGameHeight - kPaddleHeight;
-                        }
+                        aiPaddleRectBlue.Y = kGameHeight - kPaddleHeight;
                     }
                     else
                     {
@@ -883,24 +876,55 @@ namespace Pong
                         {
                             aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
                         }
-                        //WHY DOES IT NOT WORK? (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
+
                         if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
                         {
-                            if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
-                            {
-                                Console.WriteLine("aiPaddleCenterBlue: " + aiPaddleCenterBlue);
-                                Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
-                                Console.WriteLine("aiPaddleRectBlue.Y: " + aiPaddleRectBlue.Y);
-                                Console.WriteLine("predictedBallBlueHeight: " + predictedBallBlueHeight);
-                                aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
-                            }
-                            else if (gameLevel == 2 || gameLevel == 4)
-                            {
-                                aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
-                            }
+                            aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
                         }
                     }
                 }
+
+                //if (predictedBallBlueHeight > 0 && ballCenterBlue != aiPaddleCenterBlue)
+                //{
+                //    if ((aiPaddleRectBlue.Y + kPaddleHeight) > kGameHeight)
+                //    {
+                //        if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
+                //        {
+                //            aiPaddleRectBlue.Y = kGameHeight - (kPaddleHeight / 2);
+                //        }
+                //        else
+                //        {
+                //            aiPaddleRectBlue.Y = kGameHeight - kPaddleHeight;
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (ballCenterBlue < aiPaddleCenterBlue)
+                //        {
+                //            aiPaddleRectBlue.Y -= kMaxAIPaddleVelocity;
+                //        }
+                //        else if (ballCenterBlue > aiPaddleCenterBlue)
+                //        {
+                //            aiPaddleRectBlue.Y += kMaxAIPaddleVelocity;
+                //        }
+                //        //WHY DOES IT NOT WORK? (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
+                //        if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
+                //        {
+                //            if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
+                //            {
+                //                Console.WriteLine("aiPaddleCenterBlue: " + aiPaddleCenterBlue);
+                //                Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
+                //                Console.WriteLine("aiPaddleRectBlue.Y: " + aiPaddleRectBlue.Y);
+                //                Console.WriteLine("predictedBallBlueHeight: " + predictedBallBlueHeight);
+                //                aiPaddleRectBlue.Y = ballCenterBlue - (kSmallPaddleHeight / 2);
+                //            }
+                //            else if (gameLevel == 2 || gameLevel == 4)
+                //            {
+                //                aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
+                //            }
+                //        }
+                //    }
+                //}
             }
 
             base.Update(gameTime);
@@ -931,24 +955,24 @@ namespace Pong
                 if (gameMode == (int)playerMode.singlePlayer)
                 {
                     //Draw the player's paddles
-                    spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
+                    spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
 
                     //Draw the AI's paddles
-                    spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
+                    spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.IndianRed);
 
                     //Draw the ball
-                    spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
+                    spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
 
                     if (gameLevel == 4 || gameLevel == 5)
                     {
                         //Draw the player's paddles
-                        spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
+                        spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
 
                         //Draw the AI's paddles
-                        spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.IndianRed);
+                        spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
 
                         //Draw the ball
-                        spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
+                        spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
                     }
                 }
                 else if (gameMode == (int)playerMode.multiPlayer) //multiplayer skeleton code
