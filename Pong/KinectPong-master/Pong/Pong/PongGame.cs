@@ -220,13 +220,23 @@ namespace Pong
                 }
             }
 
-            aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
-            aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
+            if (gameLevel == 1)
+            {
+                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight * 2);
+                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
+            }
+            else
+            {
 
-            player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
-            player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
+                aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
+                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
 
-            if (gameLevel == 2 || gameLevel == 4)
+                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
+                player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
+
+            }
+
+            if (gameLevel == 3 || gameLevel == 5)
             {
                 player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
 
@@ -244,10 +254,10 @@ namespace Pong
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
                 currentGameLevel = gameLevel;
-                if (gameLevel == 4)
+                if (gameLevel == 5)
                 {
-                    gameLevel = 5;
-                    currentGameLevel = 5;
+                    gameLevel = 6;
+                    currentGameLevel = 6;
                     backgroundSoundInstance.Pause();
                     gameoverSoundInstance.Play();
                     while (gameoverSoundInstance.State == SoundState.Playing)
@@ -258,7 +268,7 @@ namespace Pong
                 }
                 else
                 {
-                    gameLevel = 6;
+                    gameLevel = 7;
                     timer = new CountdownTimer(5);
                 }
                 player1GameScore++;
@@ -271,10 +281,10 @@ namespace Pong
                 ballBlueVelocity = new Vector2(0.0f, 0.0f);
                 //Progress the game and tally "Game" score
                 currentGameLevel = gameLevel;
-                if (gameLevel == 4)
+                if (gameLevel == 5)
                 {
-                    gameLevel = 5;
-                    currentGameLevel = 5;
+                    gameLevel = 6;
+                    currentGameLevel = 6;
                     backgroundSoundInstance.Pause();
                     gameoverSoundInstance.Play();
                     while (gameoverSoundInstance.State == SoundState.Playing)
@@ -285,7 +295,7 @@ namespace Pong
                 }
                 else
                 {
-                    gameLevel = 6;
+                    gameLevel = 7;
                     timer = new CountdownTimer(5);
                 }
                 player2GameScore++;
@@ -295,7 +305,7 @@ namespace Pong
                 //randomly create a velocity for the blue ball
                 ballBlueVelocity = RandomVelocity();
 
-                if (gameLevel == 3 || gameLevel == 4)
+                if (gameLevel == 4 || gameLevel == 5)
                 {
                     //randomly create a velocity for the red ball
                     ballRedVelocity = RandomVelocity();
@@ -400,21 +410,25 @@ namespace Pong
                                     gameLevel++;
                                 }
                                 break;
-                            //gamelevel 1 = one big
-                            case 1: 
+                            //gamelevel 1 = one extremely big
+                            case 1:
                                 handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 break;
-                            //gamelevel 2 = one small
+                            //gamelevel 2 = one big
                             case 2:
+                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
+                                break;
+                            //gamelevel 3 = one small
+                            case 3:
                                 handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 1.0f, 1.0f, ScalingType.paddleSmall).Position.Y;
                                 break;
-                            //gamelevel 3 = two big
-                            case 3:
+                            //gamelevel 4 = two big
+                            case 4:
                                 handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 break;
-                            //gamelevel 4 = one big, one small
-                            case 4:
+                            //gamelvel 5 = one big, one small
+                            case 5:
                                 handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 1.0f, 1.0f, ScalingType.paddleSmall).Position.Y;
                                 break;
@@ -488,7 +502,7 @@ namespace Pong
 
             predictedBallRedHeight = currentBallRectRed.Y + new Random(time.Millisecond).Next(-20, 20);
 
-            if (gameLevel != 2 && gameLevel != 4)
+            if (gameLevel != 3 && gameLevel != 5)
             {
                 predictedBallBlueHeight = currentBallRectBlue.Y + new Random(time.Millisecond).Next(-20, 20);
             }
@@ -717,27 +731,36 @@ namespace Pong
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad5))
             {
                 gameLevel = 5;
+                player1Score = 0;
+                player2Score = 0;
+                gameText = "";
+                RestartGame();
+            }
+
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad6))
+            {
+                gameLevel = 6;
                 gameText = "";
             }
 
-            if (gameLevel == 6)
+            if (gameLevel == 7)
             {
                 timer.Start();
 
                 if (timer.GetSeconds() == 0)
                 {
                     gameLevel = currentGameLevel + 1;
-                    currentGameLevel = 6;
+                    currentGameLevel = 7;
                     player1Score = 0;
                     player2Score = 0;
                     gameText = "";
                     timer.Stop();
                 }
             } 
-            else if (gameLevel > 0 && gameLevel <= 4)
+            else if (gameLevel > 0 && gameLevel <= 5)
             {
 
-                if (currentGameLevel == 6)
+                if (currentGameLevel == 7)
                 {
                     RestartGame();
                     currentGameLevel = 0;
@@ -841,7 +864,7 @@ namespace Pong
                 {
                     if ((aiPaddleRectBlue.Y + kPaddleHeight) > kGameHeight)
                     {
-                        if (gameLevel == 2 || gameLevel == 4)
+                        if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
                         {
                             aiPaddleRectBlue.Y = kGameHeight - (kPaddleHeight / 2);
                         }
@@ -863,7 +886,7 @@ namespace Pong
                         //WHY DOES IT NOT WORK? (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
                         if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
                         {
-                            if (gameLevel == 2 || gameLevel == 4)
+                            if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
                             {
                                 Console.WriteLine("aiPaddleCenterBlue: " + aiPaddleCenterBlue);
                                 Console.WriteLine("ballCenterBlue: " + ballCenterBlue);
@@ -871,7 +894,7 @@ namespace Pong
                                 Console.WriteLine("predictedBallBlueHeight: " + predictedBallBlueHeight);
                                 aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
                             }
-                            else if (gameLevel == 1 || gameLevel == 3)
+                            else if (gameLevel == 2 || gameLevel == 4)
                             {
                                 aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
                             }
@@ -893,15 +916,15 @@ namespace Pong
             {
                 drawTitleScreen();
             }
-            else if (gameLevel == 5)
+            else if (gameLevel == 6)
             {
                 drawEndScreen();
             }
-            else if (gameLevel == 6)
+            else if (gameLevel == 7)
             {
                 drawTransitionScreen();
             }
-            else if (gameLevel < 5)
+            else if (gameLevel < 6)
             {
 
                 //skeleton code for multiplayer and singleplayer with gamelevel mechanics
@@ -916,7 +939,7 @@ namespace Pong
                     //Draw the ball
                     spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
 
-                    if (gameLevel == 3 || gameLevel == 4)
+                    if (gameLevel == 4 || gameLevel == 5)
                     {
                         //Draw the player's paddles
                         spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
@@ -1022,7 +1045,7 @@ namespace Pong
             spriteBatch.DrawString(gameFont, (message), msgPosition, Color.Black);
             spriteBatch.DrawString(gameFont, (countdown), timePosition, Color.Black);
 
-            if (currentGameLevel + 1 == 6)
+            if (currentGameLevel + 1 == 7)
             {
                 level = "WRONG";
             }
