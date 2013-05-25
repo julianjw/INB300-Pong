@@ -852,9 +852,7 @@ namespace Pong
                     }
 
                     RestartGame();
-                }
-
-                if (collisionBlue == BallCollision.RightMiss || collisionBlue == BallCollision.LeftMiss)
+                } else if (collisionBlue == BallCollision.RightMiss || collisionBlue == BallCollision.LeftMiss)
                 {
                     //Changes the score to reflect who won the point (who missed the ball)
                     if (BallCollision.RightMiss == collisionBlue)
