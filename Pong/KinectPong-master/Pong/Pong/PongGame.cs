@@ -229,8 +229,8 @@ namespace Pong
 
             setPaddles();
 
-            ballRedRect = new Rectangle(500, 600, kBallWidth, kBallHeight);
-            ballBlueRect = new Rectangle(500, 300, kBallWidth, kBallHeight);
+            ballRedRect = new Rectangle(hMidPoint, vMidPoint, kBallWidth, kBallHeight);
+            ballBlueRect = new Rectangle(hMidPoint, vMidPoint, kBallWidth, kBallHeight);
 
             if (player1Score >= 3)
             {
@@ -1085,7 +1085,7 @@ namespace Pong
                 //Draw the 1st ball
                 spriteBatch.Draw(ballTexture, ballRedRect, Color.Red);
 
-                if (gameLevel == 4 || gameLevel == 5)
+                if ((gameLevel == 4 || gameLevel == 5) && ballBlueVelocity != zeroVelocity)
                 {
                     //Draw the 2nd ball
                     spriteBatch.Draw(ballTexture, ballBlueRect, Color.Blue);
@@ -1156,7 +1156,7 @@ namespace Pong
         private void drawTitleScreen()
         {
             string tagline = "Yo dawg I heard you like PONG!";
-            string instructions = "Raise your left hand to start game";
+            string instructions = "Raise your LEFT hand to start game";
 
             // Text sizes according to font package
             Vector2 titleTxtSize = titleFont.MeasureString(gameTitle);
