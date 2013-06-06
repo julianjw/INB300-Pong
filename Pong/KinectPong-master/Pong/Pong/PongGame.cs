@@ -122,9 +122,12 @@ namespace Pong
         const int kLRMargin = 20, kPaddleWidth = 26, kPaddleHeight = 200, kSmallPaddleHeight = 120, kBigPaddleHeight = 300;
 		const int kBallWidth = 24, kBallHeight = 24;
 		const int kMaxAIPaddleVelocity = 7;
-		const int kGameWidth = 1920, kGameHeight = 1080;
-        const int hMidPoint = kGameWidth / 2;
-        const int vMidPoint = kGameHeight / 2;
+		//const int kGameWidth = 1920, kGameHeight = 1080;
+        static int kGameWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        static int kGameHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        int hMidPoint = kGameWidth / 2;
+        int vMidPoint = kGameHeight / 2;
+        string pointWinner = "";
 
         int[] playerPaddleHeights = { 0, kBigPaddleHeight, kPaddleHeight, kSmallPaddleHeight, kBigPaddleHeight, kPaddleHeight, 0 };
         int[] aiPaddleHeights = { 0, kSmallPaddleHeight, kPaddleHeight, kSmallPaddleHeight, kPaddleHeight, kPaddleHeight, 0 };
@@ -791,11 +794,13 @@ namespace Pong
                     //Changes the score to reflect who won the point (who missed the ball)
                     if (BallCollision.RightMiss == collisionRed)
                     {
-                        player1Score += 1;
+                        player1Score++;
+                        pointWinner = "Player";
                     }
                     else if (BallCollision.LeftMiss == collisionRed)
                     {
-                        player2Score += 1;
+                        player2Score++;
+                        pointWinner = "Computer";
                     }
 
                     RestartGame();
@@ -804,11 +809,13 @@ namespace Pong
                     //Changes the score to reflect who won the point (who missed the ball)
                     if (BallCollision.RightMiss == collisionBlue)
                     {
-                        player1Score += 1;
+                        player1Score++;
+                        pointWinner = "Player";
                     }
                     else if (BallCollision.LeftMiss == collisionBlue)
                     {
-                        player2Score += 1;
+                        player2Score++;
+                        pointWinner = "Computer";
                     }
 
                     RestartGame();
@@ -1201,6 +1208,32 @@ namespace Pong
             {
                 level = "WRONG";
             }
+        }
+
+        private void drawScoreScreen()
+        {
+            string level = "Level: " + gameLevel;
+            string score = player1Score + " | " + player2Score;
+            string message = pointWinner + " scored a Point!";
+            string countdown = timer.GetSeconds().ToString();
+
+            // Text sizes according to font package
+            Vector2 lvlTxtSize = gameFont.MeasureString(level);
+            Vector2 scrTxtSize = gameFont.MeasureString(score);
+            Vector2 msgTxtSize = gameFont.MeasureString(message);
+            Vector2 timeTxtSize = gameFont.MeasureString(countdown);
+
+            // Text positions according to sizes
+            Vector2 levelTxtPos = new Vector2(hMidPoint - (lvlTxtSize.X / 2), 0);
+            Vector2 scoreTxtPos = new Vector2(hMidPoint - (scrTxtSize.X / 2), (lvlTxtSize.Y));
+            Vector2 msgTxtPos = new Vector2(hMidPoint - (msgTxtSize.X / 2), vMidPoint);
+            Vector2 timeTxtPos = new Vector2(hMidPoint - (timeTxtSize.X / 2), vMidPoint + msgTxtSize.Y);
+
+            // Draw text
+            spriteBatch.DrawString(gameFont, (level), levelTxtPos, Color.White);
+            spriteBatch.DrawString(gameFont, (score), scoreTxtPos, Color.White);
+            spriteBatch.DrawString(gameFont, (message), msgTxtPos, Color.White);
+            spriteBatch.DrawString(gameFont, (countdown), timeTxtPos, Color.White);
         }
 
         private void drawScore()
