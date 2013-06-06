@@ -927,7 +927,7 @@ namespace Pong
 
         private void keyboardInputs()
         {
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Escape) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.Q))
                 this.Exit();
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.N))
@@ -938,45 +938,45 @@ namespace Pong
                 resetGameScore();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1))
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D1))
             {
                 gameLevel = 1;
                 gameState = state.PLAY;
                 resetScore();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2))
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D2))
             {
                 gameLevel = 2;
                 gameState = state.PLAY;
                 resetScore();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3))
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D3))
             {
                 gameLevel = 3;
                 gameState = state.PLAY;
                 resetScore();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4))
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D4))
             {
                 gameLevel = 4;
                 gameState = state.PLAY;
                 resetScore();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad5))
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad5) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D5))
             {
                 gameLevel = 5;
                 gameState = state.PLAY;
                 resetScore();
             }
 
-            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad6))
+            if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad6) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D6))
             {
                 gameLevel = 6;
-                gameState = state.PLAY;
+                gameState = state.END;
                 resetScore();
             }
         }
