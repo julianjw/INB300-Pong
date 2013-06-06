@@ -127,6 +127,7 @@ namespace Pong
         const int vMidPoint = kGameHeight / 2;
 		
 		bool passedCenter = false;
+        bool ballLaunchReady = false;
 		
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
@@ -145,6 +146,8 @@ namespace Pong
 		Vector2 ballRedVelocity;
         Vector2 ballBlueVelocity;
 
+        Vector2 zeroVelocity = new Vector2(0.0f, 0.0f);
+
 		Rectangle ballRedRect;
         Rectangle ballBlueRect;
 		
@@ -162,13 +165,6 @@ namespace Pong
         SpriteFont instructionsFont;
 
         float handPos;
-        int ballRedVelocityX;
-        int ballRedVelocityY;
-
-        int ballBlueVelocityX;
-        int ballBlueVelocityY;
-
-        string gameText = "";
 
         DateTime time = new DateTime();
 
@@ -231,8 +227,8 @@ namespace Pong
             {
                 //set text to player 1 wins
                 //gameText = "Player 1 Wins!";
-                ballRedVelocity = new Vector2(0.0f, 0.0f);
-                ballBlueVelocity = new Vector2(0.0f, 0.0f);
+                ballRedVelocity = zeroVelocity;
+                ballBlueVelocity = zeroVelocity;
                 //Progress the game and tally "Game" score
                 currentGameLevel = gameLevel;
                 if (gameLevel == 5)
@@ -262,8 +258,8 @@ namespace Pong
             {
                 //set text to player 2 wins
                 //gameText = "AI Wins!";
-                ballRedVelocity = new Vector2(0.0f, 0.0f);
-                ballBlueVelocity = new Vector2(0.0f, 0.0f);
+                ballRedVelocity = zeroVelocity;
+                ballBlueVelocity = zeroVelocity;
                 //Progress the game and tally "Game" score
                 currentGameLevel = gameLevel;
                 if (gameLevel == 5)
@@ -291,24 +287,23 @@ namespace Pong
             }
             else
             {
+                ballRedVelocity = zeroVelocity;
+                ballBlueVelocity = zeroVelocity;
+
                 //randomly create a velocity for the blue ball
                 ballRedVelocity = RandomVelocity();
 
-                if (gameLevel == 4 || gameLevel == 5)
-                {
-                    //randomly create a velocity for the red ball
-                    ballBlueVelocity = RandomVelocity();
-                }
-
-                //Update red ball velocity to be displayed (testing only)
-                ballRedVelocityX = (int)ballRedVelocity.X;
-                ballRedVelocityY = (int)ballRedVelocity.Y;
-                
-                //Update blue ball velocity to be displayed (testing only)
-                ballBlueVelocityX = (int)ballBlueVelocity.X;
-                ballBlueVelocityY = (int)ballBlueVelocity.Y;
+                //if (gameLevel == 4 || gameLevel == 5)
+                //{
+                //    //randomly create a velocity for the red ball
+                //    //need to wait until the ball has bounced off the AI's paddle and come back past the middle part.
+                //    while (ballLaunchReady == false)
+                //    {
+                //        //do nothing
+                //    }
+                //    ballBlueVelocity = RandomVelocity();
+                //}
             }
-
 		}
 
         private void setPaddles()
@@ -348,14 +343,15 @@ namespace Pong
         {
             Vector2 randomVelocity = new Vector2();
 
-            randomVelocity = new Vector2((float)new Random(time.Millisecond).Next(-10, 10), (float)new Random(time.Millisecond).Next(-10, 10));
-            while (randomVelocity.X == 0 || (randomVelocity.X >= -6 && randomVelocity.X <= 0) || (randomVelocity.X <= 6 && randomVelocity.X >= 0))
+            //change velocity to random direction towards AI
+            randomVelocity = new Vector2((float)new Random(time.Millisecond).Next(5, 8), (float)new Random(time.Millisecond).Next(-8, 8));
+            //while (randomVelocity.X == 0 || (randomVelocity.X >= -6 && randomVelocity.X <= 0) || (randomVelocity.X <= 6 && randomVelocity.X >= 0))
+            //{
+            //    randomVelocity.X = new Random().Next(-10, 10);
+            //}
+            while (randomVelocity.Y == 0 || (randomVelocity.Y >= -5 && randomVelocity.Y <= 0) || (randomVelocity.Y <= 5 && randomVelocity.Y >= 0))
             {
-                randomVelocity.X = new Random().Next(-10, 10);
-            }
-            while (randomVelocity.Y == 0 || (randomVelocity.Y >= -6 && randomVelocity.Y <= 0) || (randomVelocity.Y <= 6 && randomVelocity.Y >= 0))
-            {
-                randomVelocity.Y = new Random().Next(-10, 10);
+                randomVelocity.Y = new Random().Next(-8, 8);
             }
 
             return randomVelocity;
@@ -468,14 +464,14 @@ namespace Pong
                                 player1PaddleRectLeft.Y = handLeftY;
                             //}
                         }
-                        else if (gameMode == (int)playerMode.multiPlayer)
-                        {
-                            if (skel == skeletons[1])
-                            {
-                                player2PaddleRectRight.Y = handRightY;
-                                player2PaddleRectLeft.Y = handLeftY;
-                            }
-                        }
+                        //else if (gameMode == (int)playerMode.multiPlayer)
+                        //{
+                        //    if (skel == skeletons[1])
+                        //    {
+                        //        player2PaddleRectRight.Y = handRightY;
+                        //        player2PaddleRectLeft.Y = handLeftY;
+                        //    }
+                        //}
 
                         break;
                     }
@@ -780,11 +776,11 @@ namespace Pong
             else if (gameState == state.PLAY)
             {
                 // TODO remove this IF statement I think
-                if (currentGameLevel == 7)
-                {
-                    RestartGame();
-                    currentGameLevel = 0;
-                }
+                //if (currentGameLevel == 7)
+                //{
+                //    RestartGame();
+                //currentGameLevel = 0;
+                //}
 
                 BallCollision collisionRed = AdjustBallRedPositionWithScreenBounds(ref ballRedRect, ref ballRedVelocity);
                 BallCollision collisionBlue = AdjustBallBluePositionWithScreenBounds(ref ballBlueRect, ref ballBlueVelocity);
@@ -831,6 +827,18 @@ namespace Pong
                     }
 
                     RestartGame();
+                }
+
+                //send blue ball out once red ball has passed the center after hitting the AI's paddle
+                if (gameState == state.PLAY && (gameLevel == 4 || gameLevel == 5)) {
+
+                    if (passedCenter == false && ballRedVelocity.X < 0 && (ballRedRect.X + kBallWidth <= GraphicsDevice.Viewport.Bounds.Center.X))
+                    {
+                        if (ballBlueVelocity == zeroVelocity)
+                        {
+                            ballBlueVelocity = RandomVelocity();
+                        }
+                    }
                 }
 
                 if (passedCenter == false && ballRedVelocity.X > 0 && (ballRedRect.X + kBallWidth >= GraphicsDevice.Viewport.Bounds.Center.X))
@@ -1276,5 +1284,5 @@ namespace Pong
             spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position3, Color.White);
             //spriteBatch.DrawString(gameFont, gameText, position5, Color.White);
         }
-	}
+    }
 }
