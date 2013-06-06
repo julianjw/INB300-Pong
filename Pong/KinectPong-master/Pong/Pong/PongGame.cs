@@ -242,6 +242,7 @@ namespace Pong
                 if (gameLevel == 5)
                 {
                     //gameLevel = 6;
+                    timer = new CountdownTimer(5);
                     gameState = state.END;
                     //currentGameLevel = 6;
                     backgroundSoundInstance.Pause();
@@ -745,18 +746,24 @@ namespace Pong
                 }
             }
 
-            //if (gameLevel == 7)
             if (gameState == state.TRANS)
             {
                 timer.Start();
 
                 if (timer.GetSeconds() == 0)
                 {
-                    //gameLevel = currentGameLevel + 1;
-                    //gameLevel++;
-                    //currentGameLevel = 7;
                     gameState = state.PLAY;
                     resetScore();
+                    timer.Stop();
+                }
+            }
+            else if (gameState == state.SCORE)
+            {
+                timer.Start();
+
+                if (timer.GetSeconds() == 0)
+                {
+                    gameState = state.PLAY;
                     timer.Stop();
                 }
             }
@@ -796,11 +803,15 @@ namespace Pong
                     {
                         player1Score++;
                         pointWinner = "Player";
+                        timer = new CountdownTimer(3);
+                        gameState = state.SCORE;
                     }
                     else if (BallCollision.LeftMiss == collisionRed)
                     {
                         player2Score++;
                         pointWinner = "Computer";
+                        timer = new CountdownTimer(3);
+                        gameState = state.SCORE;
                     }
 
                     RestartGame();
@@ -811,11 +822,15 @@ namespace Pong
                     {
                         player1Score++;
                         pointWinner = "Player";
+                        timer = new CountdownTimer(3);
+                        gameState = state.SCORE;
                     }
                     else if (BallCollision.LeftMiss == collisionBlue)
                     {
                         player2Score++;
                         pointWinner = "Computer";
+                        timer = new CountdownTimer(3);
+                        gameState = state.SCORE;
                     }
 
                     RestartGame();
@@ -1006,6 +1021,7 @@ namespace Pong
             {
                 gameLevel = 6;
                 gameState = state.END;
+                timer = new CountdownTimer(5);
                 resetScore();
             }
         }
@@ -1046,6 +1062,11 @@ namespace Pong
                     drawBalls();
                     drawPaddles();
                     drawScore();
+                    break;
+                case state.SCORE:
+                    drawPaddles();
+                    drawScore();
+                    drawScoreScreen();
                     break;
             }
 
@@ -1105,7 +1126,7 @@ namespace Pong
                     spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
 
                     // Draw the AI's 2nd paddle
-                    spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.Purple);
+                    spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.MidnightBlue);
                 }
             }
             else if (gameMode == (int)playerMode.multiPlayer) //multiplayer skeleton code
@@ -1184,6 +1205,7 @@ namespace Pong
             string message = "Get READY!";
             string countdown = timer.GetSeconds().ToString();
             string score = player1GameScore + "           SCORE           " + player2GameScore;
+            // TODO instructions for paddle controls
 
             // Text sizes according to font package
             Vector2 lvlTxtSize = titleFont.MeasureString(level);
@@ -1212,26 +1234,18 @@ namespace Pong
 
         private void drawScoreScreen()
         {
-            string level = "Level: " + gameLevel;
-            string score = player1Score + " | " + player2Score;
             string message = pointWinner + " scored a Point!";
             string countdown = timer.GetSeconds().ToString();
 
             // Text sizes according to font package
-            Vector2 lvlTxtSize = gameFont.MeasureString(level);
-            Vector2 scrTxtSize = gameFont.MeasureString(score);
             Vector2 msgTxtSize = gameFont.MeasureString(message);
             Vector2 timeTxtSize = gameFont.MeasureString(countdown);
 
             // Text positions according to sizes
-            Vector2 levelTxtPos = new Vector2(hMidPoint - (lvlTxtSize.X / 2), 0);
-            Vector2 scoreTxtPos = new Vector2(hMidPoint - (scrTxtSize.X / 2), (lvlTxtSize.Y));
             Vector2 msgTxtPos = new Vector2(hMidPoint - (msgTxtSize.X / 2), vMidPoint);
             Vector2 timeTxtPos = new Vector2(hMidPoint - (timeTxtSize.X / 2), vMidPoint + msgTxtSize.Y);
 
             // Draw text
-            spriteBatch.DrawString(gameFont, (level), levelTxtPos, Color.White);
-            spriteBatch.DrawString(gameFont, (score), scoreTxtPos, Color.White);
             spriteBatch.DrawString(gameFont, (message), msgTxtPos, Color.White);
             spriteBatch.DrawString(gameFont, (countdown), timeTxtPos, Color.White);
         }
@@ -1258,7 +1272,7 @@ namespace Pong
             Vector2 position3 = new Vector2(hMidPoint - 150, kGameHeight - 80);
             //Vector2 position5 = new Vector2(hMidPoint - 100, kGameHeight - 100);
 
-            spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos), position2, Color.White);
+            //spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos), position2, Color.White);
             //spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position3, Color.White);
             //spriteBatch.DrawString(gameFont, gameText, position5, Color.White);
         }
