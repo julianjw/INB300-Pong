@@ -168,6 +168,7 @@ namespace Pong
         SpriteFont gameFont;
         SpriteFont titleFont;
         SpriteFont instructionsFont;
+        SpriteFont insBoldFont;
 
         float handPos;
 
@@ -463,6 +464,7 @@ namespace Pong
             gameFont = Content.Load<SpriteFont>("Scoreboard");
             titleFont = Content.Load<SpriteFont>("Title");
             instructionsFont = Content.Load<SpriteFont>("Instructions");
+            insBoldFont = Content.Load<SpriteFont>("InstructionsBold");
 
 			dotTexture = Content.Load<Texture2D>("Dot");
 			ballTexture = Content.Load<Texture2D>("Ball");
@@ -1056,6 +1058,7 @@ namespace Pong
                     break;
                 case state.TRANS:
                     drawTransitionScreen();
+                    drawInstructions();
                     drawPaddles();
                     break;
                 case state.PLAY:
@@ -1230,6 +1233,48 @@ namespace Pong
             {
                 level = "WRONG";
             }
+        }
+
+        private void drawInstructions()
+        {
+            string move = "Move the ";
+            string redPaddle = "RED paddle";
+            string bluePaddle = "BLUE paddle";
+            string leftHand = "with your left hand";
+            string rightHand = "with your right hand";
+
+            // Text sizes according to font package
+            Vector2 moveTxtSize = instructionsFont.MeasureString(move);
+            Vector2 redPaddleTxtSize = instructionsFont.MeasureString(redPaddle);
+            Vector2 bluePaddleTxtSize = instructionsFont.MeasureString(bluePaddle);
+            Vector2 leftHTxtSize = instructionsFont.MeasureString(leftHand);
+            Vector2 rightHTxtSize = instructionsFont.MeasureString(rightHand);
+
+
+            // Text positions according to sizes
+            Vector2 move1TxtPos = new Vector2(kLRMargin + 120, 0);
+            Vector2 redPaddleTxtPos = new Vector2((move1TxtPos.X + moveTxtSize.X), 0);
+            Vector2 leftHTxtPos = new Vector2(move1TxtPos.X, (move1TxtPos.Y + moveTxtSize.Y));
+
+            Vector2 move2TxtPos = new Vector2(kLRMargin + 120, (leftHTxtPos.Y + moveTxtSize.Y + 60));
+            Vector2 bluePaddleTxtPos = new Vector2((move2TxtPos.X + moveTxtSize.X), move2TxtPos.Y);
+            Vector2 rightHTxtPos = new Vector2(move2TxtPos.X, (move2TxtPos.Y + moveTxtSize.Y));
+
+
+            // Draw text
+            spriteBatch.DrawString(instructionsFont, (move), move1TxtPos, Color.White);
+            spriteBatch.DrawString(insBoldFont, (redPaddle), redPaddleTxtPos, Color.Red);
+            spriteBatch.DrawString(instructionsFont, (leftHand), leftHTxtPos, Color.White);
+
+            if (gameLevel > 3)
+            {
+                spriteBatch.DrawString(instructionsFont, (move), move2TxtPos, Color.White);
+                spriteBatch.DrawString(insBoldFont, (bluePaddle), bluePaddleTxtPos, Color.Blue);
+                spriteBatch.DrawString(instructionsFont, (rightHand), rightHTxtPos, Color.White);
+            }
+
+            // ROTATE!!
+            //spriteBatch.DrawString(instructionsFont, (redPaddleIns), redPaddleTxtPos, Color.White, 1.0f, new Vector2(0, 0), new Vector2(1, 1), SpriteEffects.None, 0.0f);
         }
 
         private void drawScoreScreen()
