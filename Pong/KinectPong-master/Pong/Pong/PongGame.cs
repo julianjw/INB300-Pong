@@ -64,8 +64,8 @@ namespace Pong
 
             } else if (scalingType == ScalingType.paddleSmall) { //bigger area for the arm to swing up and down for the paddle to move
 
-                //Make sure the hand position is within the boundaries of the 1.0 to -0.5 scaled set
-                if (position > 1.0f)
+                //Make sure the hand position is within the boundaries of the 0.75 to -0.5 scaled set
+                if (position > 0.75f)
                     return 0;
                 if (position < -0.5f)
                     return maxPixel;
