@@ -930,29 +930,65 @@ namespace Pong
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad1) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D1))
             {
                 gameLevel = 1;
-                gameState = state.PLAY;
                 resetScore();
+                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.RightShift) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.LeftShift))
+                {
+                    timer = new CountdownTimer(5);
+                    timer.Start();
+                    gameState = state.TRANS;
+                }
+                else
+                {
+                    gameState = state.PLAY;
+                }
             }
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad2) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D2))
             {
                 gameLevel = 2;
-                gameState = state.PLAY;
                 resetScore();
+                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.RightShift) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.LeftShift))
+                {
+                    timer = new CountdownTimer(5);
+                    timer.Start();
+                    gameState = state.TRANS;
+                }
+                else
+                {
+                    gameState = state.PLAY;
+                }
             }
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad3) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D3))
             {
                 gameLevel = 3;
-                gameState = state.PLAY;
                 resetScore();
+                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.RightShift) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.LeftShift))
+                {
+                    timer = new CountdownTimer(5);
+                    timer.Start();
+                    gameState = state.TRANS;
+                }
+                else
+                {
+                    gameState = state.PLAY;
+                }
             }
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad4) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D4))
             {
                 gameLevel = 4;
-                gameState = state.PLAY;
                 resetScore();
+                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.RightShift) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.LeftShift))
+                {
+                    timer = new CountdownTimer(5);
+                    timer.Start();
+                    gameState = state.TRANS;
+                }
+                else
+                {
+                    gameState = state.PLAY;
+                }
             }
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad5) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D5))
@@ -960,6 +996,16 @@ namespace Pong
                 gameLevel = 5;
                 gameState = state.PLAY;
                 resetScore();
+                if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.RightShift) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.LeftShift))
+                {
+                    timer = new CountdownTimer(5);
+                    timer.Start();
+                    gameState = state.TRANS;
+                }
+                else
+                {
+                    gameState = state.PLAY;
+                }
             }
 
             if (Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.NumPad6) || Keyboard.GetState(PlayerIndex.One).IsKeyDown(Keys.D6))
