@@ -125,6 +125,9 @@ namespace Pong
 		const int kGameWidth = 1920, kGameHeight = 1080;
         const int hMidPoint = kGameWidth / 2;
         const int vMidPoint = kGameHeight / 2;
+
+        int[] playerPaddleHeights = { 0, kBigPaddleHeight, kPaddleHeight, kSmallPaddleHeight, kBigPaddleHeight, kPaddleHeight, 0 };
+        int[] aiPaddleHeights = { 0, kSmallPaddleHeight, kPaddleHeight, kSmallPaddleHeight, kPaddleHeight, kPaddleHeight, 0 };
 		
 		bool passedCenter = false;
 		
@@ -168,7 +171,7 @@ namespace Pong
         DateTime time = new DateTime();
 
         int gameLevel = 0;
-        enum state { START, TRANS, PLAY, END };
+        enum state { START, TRANS, PLAY, END, SCORE };
         state gameState = state.START;
 
         int currentGameLevel = 0;
@@ -237,7 +240,7 @@ namespace Pong
                 {
                     //gameLevel = 6;
                     gameState = state.END;
-                    currentGameLevel = 6;
+                    //currentGameLevel = 6;
                     backgroundSoundInstance.Pause();
                     gameoverSoundInstance.Play();
                     while (gameoverSoundInstance.State == SoundState.Playing)
@@ -298,41 +301,18 @@ namespace Pong
 
         private void setPaddles()
         {
-            switch (gameLevel)
+            // first paddle, left hand side for player
+            player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, playerPaddleHeights[gameLevel]);
+            // right hand side for AI
+            aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, aiPaddleHeights[gameLevel]);
+
+            if (gameLevel > 3) // dual paddles
             {
-                case 1:
-                    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kBigPaddleHeight);
-                    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kSmallPaddleHeight);
-                    break;
-                case 2:
-                case 3:
-                case 4:
-                    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kBigPaddleHeight);
-                    player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kBigPaddleHeight);
-
-                    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
-                    aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
-                    break;
-                case 5:
-                    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
-                    aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
-
-                    player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight);
-                    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight);
-                    break;
+                // second paddle, right hand side for player
+                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, playerPaddleHeights[gameLevel]);
+                // left hand side for AI
+                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, aiPaddleHeights[gameLevel]);
             }
-
-            //if (gameLevel == 3)
-            //{
-            //    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kSmallPaddleHeight);
-            //    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kSmallPaddleHeight);
-            //}
-
-            //if (gameLevel == 5)
-            //{
-            //    player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kSmallPaddleHeight);
-            //    aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kSmallPaddleHeight);
-            //}
         }
 
         private Vector2 RandomVelocity()
@@ -1077,7 +1057,7 @@ namespace Pong
                 spriteBatch.Draw(dotTexture, player1PaddleRectLeft, Color.Red);
 
                 // Draw the AI's 1st paddle
-                spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.IndianRed);
+                spriteBatch.Draw(dotTexture, aiPaddleRectRed, Color.OrangeRed);
 
                 if (gameLevel == 4 || gameLevel == 5)
                 {
@@ -1085,7 +1065,7 @@ namespace Pong
                     spriteBatch.Draw(dotTexture, player1PaddleRectRight, Color.Blue);
 
                     // Draw the AI's 2nd paddle
-                    spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.SteelBlue);
+                    spriteBatch.Draw(dotTexture, aiPaddleRectBlue, Color.Purple);
                 }
             }
             else if (gameMode == (int)playerMode.multiPlayer) //multiplayer skeleton code
@@ -1213,7 +1193,7 @@ namespace Pong
             //Vector2 position5 = new Vector2(hMidPoint - 100, kGameHeight - 100);
 
             spriteBatch.DrawString(gameFont, ("Hand Position on Screen: " + handPos), position2, Color.White);
-            spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position3, Color.White);
+            //spriteBatch.DrawString(gameFont, ("Player Mode: " + gameMode), position3, Color.White);
             //spriteBatch.DrawString(gameFont, gameText, position5, Color.White);
         }
     }
