@@ -420,15 +420,15 @@ namespace Pong
                             case 3:
                                 handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kSmallPaddleHeight, 0.75f, 0.75f, ScalingType.paddleSmall).Position.Y;
                                 break;
-                            //gamelevel 4 = two big
+                            //gamelevel 4 = two extremely big
                             case 4:
                                 handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
                                 break;
-                            //gamelvel 5 = one big, one small
+                            //gamelevel 5 = two normal size
                             case 5:
                                 handLeftY = (int)SkeletalCommonExtensions.ScaleTo(jointLeft, kGameWidth, kGameHeight - kPaddleHeight, 0.5f, 0.5f, ScalingType.paddleBig).Position.Y;
-                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kSmallPaddleHeight, 0.75f, 0.75f, ScalingType.paddleSmall).Position.Y;
+                                handRightY = (int)SkeletalCommonExtensions.ScaleTo(jointRight, kGameWidth, kGameHeight - kSmallPaddleHeight, 0.75f, 0.75f, ScalingType.paddleBig).Position.Y;
                                 break;
                             //default: break;
                         }
