@@ -119,10 +119,10 @@ namespace Pong
 	public class PongGame : Microsoft.Xna.Framework.Game
 	{
         const string gameTitle = "Pong 9001";
-        const int kLRMargin = 20, kPaddleWidth = 26, kPaddleHeight = 120, kSmallPaddleHeight = 60;
+        const int kLRMargin = 20, kPaddleWidth = 26, kPaddleHeight = 200, kSmallPaddleHeight = 120, kBigPaddleHeight = 300;
 		const int kBallWidth = 24, kBallHeight = 24;
 		const int kMaxAIPaddleVelocity = 7;
-		const int kGameWidth = 1360, kGameHeight = 800;
+		const int kGameWidth = 1920, kGameHeight = 1080;
         const int hMidPoint = kGameWidth / 2;
         const int vMidPoint = kGameHeight / 2;
 		
@@ -194,6 +194,9 @@ namespace Pong
 			graphics = new GraphicsDeviceManager(this);
 			graphics.PreferredBackBufferWidth = kGameWidth;
 			graphics.PreferredBackBufferHeight = kGameHeight;
+            
+            //graphics.PreferMultiSampling = false;
+            graphics.IsFullScreen = true;
 			
 			Content.RootDirectory = "Content";
 		}
@@ -298,12 +301,18 @@ namespace Pong
             switch (gameLevel)
             {
                 case 1:
-                    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight * 2);
-                    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
+                    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kBigPaddleHeight);
+                    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kSmallPaddleHeight);
                     break;
                 case 2:
                 case 3:
                 case 4:
+                    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kBigPaddleHeight);
+                    player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kBigPaddleHeight);
+
+                    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
+                    aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
+                    break;
                 case 5:
                     aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight);
                     aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight);
@@ -313,17 +322,17 @@ namespace Pong
                     break;
             }
 
-            if (gameLevel == 3)
-            {
-                player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kPaddleHeight / 2);
-                aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kPaddleHeight / 2);
-            }
+            //if (gameLevel == 3)
+            //{
+            //    player1PaddleRectLeft = new Rectangle(kLRMargin, 0, kPaddleWidth, kSmallPaddleHeight);
+            //    aiPaddleRectRed = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth, 20, kPaddleWidth, kSmallPaddleHeight);
+            //}
 
-            if (gameLevel == 5)
-            {
-                player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kPaddleHeight / 2);
-                aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kPaddleHeight / 2);
-            }
+            //if (gameLevel == 5)
+            //{
+            //    player1PaddleRectRight = new Rectangle(kLRMargin + 60, 0, kPaddleWidth, kSmallPaddleHeight);
+            //    aiPaddleRectBlue = new Rectangle(GraphicsDevice.Viewport.Width - kLRMargin - kPaddleWidth - 60, 20, kPaddleWidth, kSmallPaddleHeight);
+            //}
         }
 
         private Vector2 RandomVelocity()
