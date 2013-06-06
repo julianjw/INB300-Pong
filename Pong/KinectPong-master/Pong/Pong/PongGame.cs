@@ -730,6 +730,18 @@ namespace Pong
         {
             keyboardInputs();
 
+            if (gameState == state.END)
+            {
+                timer.Start();
+
+                if (timer.GetSeconds() == 0)
+                {
+                    gameState = state.START;
+                    resetGameScore();
+                    timer.Stop();
+                }
+            }
+
             //if (gameLevel == 7)
             if (gameState == state.TRANS)
             {
@@ -835,8 +847,7 @@ namespace Pong
                 if (predictedBallRedHeight > 0 && ballCenterRed != aiPaddleCenterRed)
                 {
 
-                    if (((((aiPaddleRectRed.Y + kSmallPaddleHeight) <= kGameHeight) && (gameLevel == 1 || gameLevel == 3 || gameLevel == 5))) || 
-                        (((aiPaddleRectRed.Y + kPaddleHeight) <= kGameHeight) && (gameLevel == 2 || gameLevel == 4)))
+                    if ((aiPaddleRectRed.Y + aiPaddleRectRed.Height) <= kGameHeight)
                     {
                         if (ballCenterRed < aiPaddleCenterRed)
                         {
@@ -849,30 +860,12 @@ namespace Pong
 
                         if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
                         {
-                            if (gameLevel == 1 || gameLevel == 3)
-                            {
-                                aiPaddleRectRed.Y = ballCenterRed - (kSmallPaddleHeight / 2);
-                            }
-                            else if (gameLevel == 2 || gameLevel == 4)
-                            {
-                                aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
-                            }
-                            else
-                            {
-                                aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
-                            }
+                            aiPaddleRectRed.Y = ballCenterRed - (aiPaddleRectRed.Height / 2);
                         }
                     }
                     else
                     {
-                        if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
-                        {
-                            aiPaddleRectRed.Y = kGameHeight - kSmallPaddleHeight;
-                        }
-                        else
-                        {
-                            aiPaddleRectRed.Y = kGameHeight - kPaddleHeight;
-                        }
+                        aiPaddleRectRed.Y = kGameHeight - aiPaddleRectRed.Height;
                     }
                 }
 
@@ -881,9 +874,9 @@ namespace Pong
 
                 if (predictedBallBlueHeight > 0 && ballCenterBlue != aiPaddleCenterBlue)
                 {
-                    if ((aiPaddleRectBlue.Y + kPaddleHeight) > kGameHeight)
+                    if ((aiPaddleRectBlue.Y + aiPaddleRectBlue.Height) > kGameHeight)
                     {
-                        aiPaddleRectBlue.Y = kGameHeight - kPaddleHeight;
+                        aiPaddleRectBlue.Y = kGameHeight - aiPaddleRectBlue.Height;
                     }
                     else
                     {
@@ -898,14 +891,8 @@ namespace Pong
 
                         if (Math.Abs(ballCenterBlue - aiPaddleCenterBlue) < kMaxAIPaddleVelocity)
                         {
-                            if (gameLevel == 5)
-                            {
-                                aiPaddleRectBlue.Y = ballCenterBlue - (kSmallPaddleHeight / 2);
-                            }
-                            else
-                            {
-                                aiPaddleRectBlue.Y = ballCenterBlue - (kPaddleHeight / 2);
-                            }
+
+                            aiPaddleRectBlue.Y = ballCenterBlue - (aiPaddleRectBlue.Height / 2);
                         }
                     }
                 }
