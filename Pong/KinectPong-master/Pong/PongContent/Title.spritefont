@@ -11,13 +11,13 @@ with.
     <!--
     Modify this string to change the font that will be imported.
     -->
-    <FontName>Baskerville Old Face</FontName>
+    <FontName>Georgia</FontName>
 
     <!--
     Size is a float value, measured in points. Modify this value to change
     the size of the font.
     -->
-    <Size>64</Size>
+    <Size>106</Size>
 
     <!--
     Spacing is a float value, measured in pixels. Modify this value to change
