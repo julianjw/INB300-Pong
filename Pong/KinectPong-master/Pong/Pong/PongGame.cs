@@ -127,7 +127,6 @@ namespace Pong
         const int vMidPoint = kGameHeight / 2;
 		
 		bool passedCenter = false;
-        bool ballLaunchReady = false;
 		
 		GraphicsDeviceManager graphics;
 		SpriteBatch spriteBatch;
@@ -290,19 +289,7 @@ namespace Pong
                 ballRedVelocity = zeroVelocity;
                 ballBlueVelocity = zeroVelocity;
 
-                //randomly create a velocity for the blue ball
                 ballRedVelocity = RandomVelocity();
-
-                //if (gameLevel == 4 || gameLevel == 5)
-                //{
-                //    //randomly create a velocity for the red ball
-                //    //need to wait until the ball has bounced off the AI's paddle and come back past the middle part.
-                //    while (ballLaunchReady == false)
-                //    {
-                //        //do nothing
-                //    }
-                //    ballBlueVelocity = RandomVelocity();
-                //}
             }
 		}
 
@@ -345,10 +332,7 @@ namespace Pong
 
             //change velocity to random direction towards AI
             randomVelocity = new Vector2((float)new Random(time.Millisecond).Next(5, 8), (float)new Random(time.Millisecond).Next(-8, 8));
-            //while (randomVelocity.X == 0 || (randomVelocity.X >= -6 && randomVelocity.X <= 0) || (randomVelocity.X <= 6 && randomVelocity.X >= 0))
-            //{
-            //    randomVelocity.X = new Random().Next(-10, 10);
-            //}
+
             while (randomVelocity.Y == 0 || (randomVelocity.Y >= -5 && randomVelocity.Y <= 0) || (randomVelocity.Y <= 5 && randomVelocity.Y >= 0))
             {
                 randomVelocity.Y = new Random().Next(-8, 8);
@@ -873,15 +857,11 @@ namespace Pong
                         {
                             aiPaddleRectRed.Y += kMaxAIPaddleVelocity;
                         }
-                        //WHY DOES IT NOT WORK? (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
+
                         if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
                         {
                             if (gameLevel == 1 || gameLevel == 3)
                             {
-                                //Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
-                                //Console.WriteLine("ballCenterRed: " + ballCenterRed);
-                                //Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
-                                //Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
                                 aiPaddleRectRed.Y = ballCenterRed - (kSmallPaddleHeight / 2);
                             }
                             else if (gameLevel == 2 || gameLevel == 4)
@@ -899,21 +879,10 @@ namespace Pong
                         if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
                         {
                             aiPaddleRectRed.Y = kGameHeight - kSmallPaddleHeight;
-                            //aiPaddleRectRed.Y = kGameHeight - kSmallPaddleHeight - kMaxAIPaddleVelocity;
-                            //if (predictedBallBlueHeight > kGameHeight - kPaddleHeight - (ballBlueRect.Height / 2))
-                            //{
-                            //    predictedBallBlueHeight = kGameHeight - kPaddleHeight - (ballBlueRect.Height / 2);
-                            //}
                         }
                         else
                         {
                             aiPaddleRectRed.Y = kGameHeight - kPaddleHeight;
-                            //aiPaddleRectRed.Y = kGameHeight - kPaddleHeight - kMaxAIPaddleVelocity;
-                            //if (predictedBallBlueHeight > kGameHeight - kPaddleHeight - (ballBlueRect.Height / 2))
-                            //{
-                            //    predictedBallBlueHeight = kGameHeight - kPaddleHeight - (ballBlueRect.Height / 2);
-                            //}
-                            //aiPaddleRectRed.Y -= kMaxAIPaddleVelocity;
                         }
                     }
                 }
@@ -942,10 +911,6 @@ namespace Pong
                         {
                             if (gameLevel == 5)
                             {
-                                //Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
-                                //Console.WriteLine("ballCenterRed: " + ballCenterRed);
-                                //Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
-                                //Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
                                 aiPaddleRectBlue.Y = ballCenterBlue - (kSmallPaddleHeight / 2);
                             }
                             else
@@ -955,48 +920,6 @@ namespace Pong
                         }
                     }
                 }
-
-                //if (predictedBallRedHeight > 0 && ballCenterRed != aiPaddleCenterRed)
-                //{
-                //    if ((aiPaddleRectRed.Y + kPaddleHeight) > kGameHeight)
-                //    {
-                //        if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
-                //        {
-                //            aiPaddleRectRed.Y = kGameHeight - (kPaddleHeight / 2);
-                //        }
-                //        else
-                //        {
-                //            aiPaddleRectRed.Y = kGameHeight - kPaddleHeight;
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (ballCenterRed < aiPaddleCenterRed)
-                //        {
-                //            aiPaddleRectRed.Y -= kMaxAIPaddleVelocity;
-                //        }
-                //        else if (ballCenterRed > aiPaddleCenterRed)
-                //        {
-                //            aiPaddleRectRed.Y += kMaxAIPaddleVelocity;
-                //        }
-                //        //WHY DOES IT NOT WORK? (it has the right y coordinates to get the ball, but doesn't go to it or it does but it doesnt?
-                //        if (Math.Abs(ballCenterRed - aiPaddleCenterRed) < kMaxAIPaddleVelocity)
-                //        {
-                //            if (gameLevel == 1 || gameLevel == 3 || gameLevel == 5)
-                //            {
-                //                Console.WriteLine("aiPaddleCenterRed: " + aiPaddleCenterRed);
-                //                Console.WriteLine("ballCenterRed: " + ballCenterRed);
-                //                Console.WriteLine("aiPaddleRectRed.Y: " + aiPaddleRectRed.Y);
-                //                Console.WriteLine("predictedBallRedHeight: " + predictedBallRedHeight);
-                //                aiPaddleRectRed.Y = ballCenterRed - (kSmallPaddleHeight / 2);
-                //            }
-                //            else if (gameLevel == 2 || gameLevel == 4)
-                //            {
-                //                aiPaddleRectRed.Y = ballCenterRed - (kPaddleHeight / 2);
-                //            }
-                //        }
-                //    }
-                //}
             }
 
             base.Update(gameTime);
